@@ -1,6 +1,5 @@
 package com.nsak.android.network;
 
-import com.easymobile.lan.scanner.main.HostScan;
 import com.nsak.android.App;
 import com.nsak.android.core.ThreadPoolRunnable;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
@@ -49,8 +48,6 @@ public class NetworkScanner {
         stopScanning();
         App.sInstance.getThreadPool().destroy();
     }
-
-    private HostScan mHostScan = new HostScan();
 
     public Observable<Host> scanNetwork(final WifiInfo wifiInfo) {
         return Observable.create(new Observable.OnSubscribe<Host>() {

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.easymobile.lan.scanner.main.HostScan;
 import com.mikepenz.materialdrawer.Drawer;
 import com.nsak.android.event.NetworkStateChangedEvent;
 
