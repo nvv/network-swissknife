@@ -1,6 +1,8 @@
 package com.nsak.android.network;
 
 import com.nsak.android.App;
+import com.nsak.android.NetworkScanActivity;
+import com.nsak.android.core.ThreadPool;
 import com.nsak.android.core.ThreadPoolRunnable;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
 import com.nsak.android.network.db.VendorDbAdapter;
@@ -10,6 +12,8 @@ import com.nsak.android.network.utils.NetworkCalculator;
 import com.nsak.android.network.utils.NetworkUtils;
 import com.nsak.android.network.wifi.WifiInfo;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.net.InetAddress;
@@ -18,9 +22,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
-import de.greenrobot.event.EventBus;
 import jcifs.netbios.NbtAddress;
 import rx.Observable;
 import rx.Subscriber;
@@ -34,7 +40,7 @@ public class NetworkScanner {
 
     private String TAG = "Network Scanner";
 
-    private final Map<String, Host> mReachableHosts = new HashMap<>();
+    private final Map<String, Host> mReachableHosts = new ConcurrentHashMap<>();
 
     private boolean mIsScanning;
 
@@ -46,10 +52,10 @@ public class NetworkScanner {
 
     public void destroy() {
         stopScanning();
-        App.sInstance.getThreadPool().destroy();
+        App.sInstance.getThreadPool().stopAllTasks();
     }
 
-    public Observable<Host> scanNetwork(final WifiInfo wifiInfo) {
+    public Observable<Host> scanNetwork(final WifiInfo wifiInfo, final Handler handler) {
         return Observable.create(new Observable.OnSubscribe<Host>() {
             private HashMap<String, String> mAddresses = new HashMap<>();
             private int mLastAvailableIpsCount;
@@ -69,7 +75,8 @@ public class NetworkScanner {
                 String[] ips;
                 try {
                     ips = NetworkCalculator.allStringAddressesInSubnet(stringIp, stringMask);
-                    EventBus.getDefault().post(new NetworkInfoDiscoveredEvent(ips.length));
+                    handler.sendMessage(Message.obtain(null, NetworkScanActivity.MSG_NETWORK_DISCOVERED,
+                            new NetworkInfoDiscoveredEvent(ips.length)));
                 } catch (Exception e) {
                     subscriber.onError(e);
                     return;
@@ -102,13 +109,14 @@ public class NetworkScanner {
                 try {
                     latch.await();
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
                     subscriber.onError(e);
                 }
 
                 subscriber.onCompleted();
             }
 
-            private void updateMacAddresses() {
+            private synchronized void updateMacAddresses() {
 
                 HardwareUtils.getHardwareAddresses(mAddresses);
 
@@ -131,8 +139,8 @@ public class NetworkScanner {
                         host.macAddress = mac;
                         host.deviceType = mGatewayIp.equals(host.ipAddress) ? 0 : 1;
                         host.nicVendor = VendorDbAdapter.getVendor(Integer.parseInt(mac.substring(0, 8).replace(":", ""), 16));
-                        Log.d(TAG, "::::: " + host.ipAddress + " : " + host.macAddress + "( " + host.nicVendor + ") " + host.deviceType + " / " + host.hostname);
-
+                        Log.d(TAG, ":::: Discovered : " + host.ipAddress + " : " +
+                                host.macAddress + "( " + host.nicVendor + ") " + host.deviceType + " / " + host.hostname);
                     }
                 });
             }
@@ -159,7 +167,7 @@ public class NetworkScanner {
             boolean isReachable = false;
             try {
 
-                Log.d(TAG, "Trying " + mIp);
+                //Log.d(TAG, "Trying " + mIp);
 
                 mInetAddress = InetAddress.getByName(mIp);
 
@@ -205,19 +213,19 @@ public class NetworkScanner {
         }
 
         private void addHost(Host host) {
-            synchronized (mReachableHosts) {
-                host.ipAddressInt = NetworkCalculator.ipStringToInt(mIp);
-                host.isReacheble = true;
-                try {
-                    host.hostname = InetAddress.getByAddress(NetworkCalculator.ipIntToByteArray(host.ipAddressInt)).getHostName();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-                host.hostname = getHostName(host.ipAddress);
-                mReachableHosts.put(mIp, host);
-
-                Log.d(TAG, "Discovered host : " + mIp);
+            host.ipAddressInt = NetworkCalculator.ipStringToInt(mIp);
+            host.isReacheble = true;
+            try {
+                host.hostname = InetAddress.getByAddress(NetworkCalculator.ipIntToByteArray(host.ipAddressInt)).getHostName();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
             }
+            if (host.hostname == null || host.hostname.equals(mIp)) {
+                host.hostname = getHostName(host.ipAddress);
+            }
+            mReachableHosts.put(mIp, host);
+
+            Log.d(TAG, "Discovered host : " + mIp);
         }
 
         private String getHostName(String ip) {

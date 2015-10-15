@@ -1,11 +1,14 @@
 package com.nsak.android.adapters;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.event.HostSelectedEvent;
 import com.nsak.android.network.Host;
@@ -15,7 +18,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.greenrobot.event.EventBus;
 
 /**
  * @author Vlad Namashko.
@@ -23,6 +25,11 @@ import de.greenrobot.event.EventBus;
 public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHolder> {
 
     protected final List<Host> mItems = new ArrayList<>();
+    protected Handler mHandler;
+
+    public HostsAdapter(Handler handler) {
+        mHandler = handler;
+    }
 
     public void addItem(Host item) {
 
@@ -81,7 +88,7 @@ public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHold
 
         @Override
         public void onClick(View v) {
-            EventBus.getDefault().post(new HostSelectedEvent(bindedHost));
+            mHandler.sendMessage(Message.obtain(null, NetworkScanActivity.MSG_HOST_SELECTED, new HostSelectedEvent(bindedHost)));
         }
     }
 }

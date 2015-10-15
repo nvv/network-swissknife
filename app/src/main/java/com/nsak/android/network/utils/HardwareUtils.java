@@ -80,8 +80,6 @@ public class HardwareUtils {
                         break;
                     }
                 }
-            } else {
-
             }
         } catch (IOException e) {
             e.printStackTrace();

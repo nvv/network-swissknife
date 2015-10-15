@@ -1,13 +1,16 @@
 package com.nsak.android.core;
 
+import android.support.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
 
 /**
  * @author Vlad Namashko.
@@ -15,15 +18,14 @@ import rx.Observable;
 public class ThreadPool implements Executor {
 
     protected static final int CPU_COUNT = Runtime.getRuntime().availableProcessors() * 2;
-    private static final int MAX_ACTIVE_LONG_TAKS = CPU_COUNT * 8;
+    private static final int MAX_ACTIVE_LONG_TASKS = CPU_COUNT * 8;
     private static final int CHECK_DOWNLOAD_QUEUE_PERIOD = 1;
 
     private ThreadPoolExecutor mTasksPool;
     private ConcurrentMap<Integer, Runnable> mTasks = new ConcurrentHashMap<>();
 
-
     public ThreadPool() {
-        mTasksPool = new ThreadPoolExecutor(MAX_ACTIVE_LONG_TAKS / 2, MAX_ACTIVE_LONG_TAKS,
+        mTasksPool = new ThreadPoolExecutor(MAX_ACTIVE_LONG_TASKS / 2, MAX_ACTIVE_LONG_TASKS,
                 CHECK_DOWNLOAD_QUEUE_PERIOD, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>()) {
 
             @Override
@@ -36,7 +38,7 @@ public class ThreadPool implements Executor {
     }
 
     @Override
-    public void execute(Runnable runnable) {
+    public void execute(@NonNull Runnable runnable) {
         int id = extractId(runnable);
         if (!mTasks.containsKey(id)) {
             mTasks.put(id, runnable);
@@ -44,7 +46,7 @@ public class ThreadPool implements Executor {
         }
     }
 
-    public void destroy() {
+    public void stopAllTasks() {
         mTasks.clear();
         mTasksPool.getQueue().clear();
     }

@@ -7,9 +7,6 @@ import android.view.MenuItem;
 import com.mikepenz.materialdrawer.Drawer;
 import com.nsak.android.event.NetworkStateChangedEvent;
 
-import de.greenrobot.event.EventBus;
-
-
 public class Main extends BaseActivity {
 
     protected Drawer.Result mDrawer;
@@ -52,19 +49,4 @@ public class Main extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
-
-    public void onEvent(NetworkStateChangedEvent event) {
-
-    }
 }

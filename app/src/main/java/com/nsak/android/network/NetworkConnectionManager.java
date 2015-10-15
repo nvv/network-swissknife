@@ -13,8 +13,6 @@ import android.text.TextUtils;
 import com.nsak.android.App;
 import com.nsak.android.event.NetworkStateChangedEvent;
 
-import de.greenrobot.event.EventBus;
-
 /**
  * Monitors connection and notifies listeners
  */
@@ -41,7 +39,8 @@ public class NetworkConnectionManager {
                         + ", subtype: " + subtypeName
                         + ", available: " + available);
 
-                EventBus.getDefault().post(new NetworkStateChangedEvent());
+                // TODO:
+                //EventBus.getDefault().post(new NetworkStateChangedEvent());
             }
         };
 
