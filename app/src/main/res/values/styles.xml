@@ -1,8 +1,21 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <!--style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"-->
-        <!-- Customize your theme here. -->
-    <!--/style-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/PrimaryColor</item>
+        <item name="colorPrimaryDark">@color/PrimaryDarkColor</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <item name="android:textColor">@color/MainTextColor</item>
+    </style>
+
+    <style name="ListItemFont">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/ListItemTextColorDark</item>
+        <item name="android:typeface">normal</item>
+    </style>
 
 </resources>

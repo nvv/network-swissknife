@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/network_scanner"
+            android:checked="true"
+            android:title="@string/title_activity_scan_network"/>
+        <item
+            android:id="@+id/wifi_analyzer"
+            android:title="@string/title_activity_wifi_anlayzer"/>
+    </group>
+</menu>

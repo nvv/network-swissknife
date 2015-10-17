@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
-public class WifiAnlayzerActivity extends BaseActivity {
+public class WifiAnlayzerActivity extends BaseDrawerActivity {
 
     private static int MSG_SCAN = 1980;
     @InjectView(R.id.list)
@@ -51,7 +51,6 @@ public class WifiAnlayzerActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi_anlayzer);
-        setupToolbarAndDrawer();
 
         initView();
 

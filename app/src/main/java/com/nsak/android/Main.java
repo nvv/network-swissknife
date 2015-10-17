@@ -4,27 +4,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.mikepenz.materialdrawer.Drawer;
-import com.nsak.android.event.NetworkStateChangedEvent;
-
-public class Main extends BaseActivity {
-
-    protected Drawer.Result mDrawer;
+public class Main extends BaseDrawerActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setupToolbarAndDrawer();
-    }
 
-    @Override
-    public void onBackPressed() {
-        if (mDrawer != null && mDrawer.isDrawerOpen()) {
-            mDrawer.closeDrawer();
-        } else {
-            super.onBackPressed();
-        }
+        //setContentView(R.layout.activity_main);
     }
 
     @Override

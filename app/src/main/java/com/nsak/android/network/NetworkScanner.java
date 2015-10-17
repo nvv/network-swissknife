@@ -1,10 +1,9 @@
 package com.nsak.android.network;
 
 import com.nsak.android.App;
-import com.nsak.android.NetworkScanActivity;
-import com.nsak.android.core.ThreadPool;
 import com.nsak.android.core.ThreadPoolRunnable;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
+import com.nsak.android.fragments.NetworkScanFragment;
 import com.nsak.android.network.db.VendorDbAdapter;
 import com.nsak.android.network.exceptions.NetworkScanException;
 import com.nsak.android.network.utils.HardwareUtils;
@@ -24,8 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import jcifs.netbios.NbtAddress;
 import rx.Observable;
@@ -75,7 +72,7 @@ public class NetworkScanner {
                 String[] ips;
                 try {
                     ips = NetworkCalculator.allStringAddressesInSubnet(stringIp, stringMask);
-                    handler.sendMessage(Message.obtain(null, NetworkScanActivity.MSG_NETWORK_DISCOVERED,
+                    handler.sendMessage(Message.obtain(null, NetworkScanFragment.MSG_NETWORK_DISCOVERED,
                             new NetworkInfoDiscoveredEvent(ips.length)));
                 } catch (Exception e) {
                     subscriber.onError(e);

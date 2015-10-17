@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="2dp"
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
-    android:orientation="vertical"
-    android:padding="12dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:orientation="vertical"
+                android:padding="12dp">
 
     <TextView
         android:id="@+id/host_name"
+        style="@style/ListItemFont"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/host_ip"
-        android:layout_below="@id/host_name"
+        style="@style/ListItemFont"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/host_name"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
-        android:layout_toRightOf="@id/host_ip"
-        android:layout_alignBaseline="@id/host_ip"
         android:id="@+id/host_mac"
-        android:gravity="end"
+        style="@style/ListItemFont"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp" />
+        android:layout_alignBaseline="@id/host_ip"
+        android:layout_toRightOf="@id/host_ip"
+        android:gravity="end"
+        android:textSize="12sp"/>
 
     <TextView
-        android:layout_below="@id/host_ip"
         android:id="@+id/host_vendor"
+        style="@style/ListItemFont"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp" />
+        android:layout_below="@id/host_ip"
+        android:textSize="12sp"/>
 
 </RelativeLayout>

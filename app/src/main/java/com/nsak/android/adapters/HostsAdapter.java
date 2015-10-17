@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.event.HostSelectedEvent;
+import com.nsak.android.fragments.NetworkScanFragment;
 import com.nsak.android.network.Host;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHold
 
         @Override
         public void onClick(View v) {
-            mHandler.sendMessage(Message.obtain(null, NetworkScanActivity.MSG_HOST_SELECTED, new HostSelectedEvent(bindedHost)));
+            mHandler.sendMessage(Message.obtain(null, NetworkScanFragment.MSG_HOST_SELECTED, new HostSelectedEvent(bindedHost)));
         }
     }
 }

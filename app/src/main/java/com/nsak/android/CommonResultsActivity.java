@@ -5,7 +5,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.nsak.android.BaseActivity;
 import com.nsak.android.fragments.PortScanFragment;
 
 import butterknife.ButterKnife;
@@ -14,7 +13,7 @@ import butterknife.InjectView;
 /**
  * @author Vlad Namashko.
  */
-public class CommonResultsActivity extends BaseActivity {
+public class CommonResultsActivity extends BaseDrawerActivity {
 
     @InjectView(R.id.common_results_title)
     TextView title;
