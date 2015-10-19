@@ -34,11 +34,11 @@ public class CommonResultsActivity extends BaseDrawerActivity {
 
         ButterKnife.inject(this);
 
-        title.setText(getIntent().getStringExtra(Constants.EXTRA_HOST_TO_SCAN));
+        //title.setText(getIntent().getStringExtra(Constants.EXTRA_HOST_TO_SCAN));
 
         PortScanFragment fragment = new PortScanFragment();
         fragment.setArguments(getIntent().getExtras());
-        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, fragment).commit();
+        //getSupportFragmentManager().beginTransaction().add(R.id.content_layout, fragment).commit();
     }
 
 }

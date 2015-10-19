@@ -24,6 +24,8 @@ public class ThreadPool implements Executor {
     private ThreadPoolExecutor mTasksPool;
     private ConcurrentMap<Integer, Runnable> mTasks = new ConcurrentHashMap<>();
 
+    private ConcurrentMap<Integer, Future> mSubmitedTasks = new ConcurrentHashMap<>();
+
     public ThreadPool() {
         mTasksPool = new ThreadPoolExecutor(MAX_ACTIVE_LONG_TASKS / 2, MAX_ACTIVE_LONG_TASKS,
                 CHECK_DOWNLOAD_QUEUE_PERIOD, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>()) {
@@ -32,6 +34,7 @@ public class ThreadPool implements Executor {
             protected void afterExecute(Runnable runnable, Throwable t) {
                 super.afterExecute(runnable, t);
                 mTasks.remove(extractId(runnable));
+                mSubmitedTasks.remove(extractId(runnable));
             }
 
         };
@@ -42,13 +45,15 @@ public class ThreadPool implements Executor {
         int id = extractId(runnable);
         if (!mTasks.containsKey(id)) {
             mTasks.put(id, runnable);
-            mTasksPool.submit(runnable);
+            mSubmitedTasks.put(id, mTasksPool.submit(runnable));
         }
     }
 
     public void stopAllTasks() {
         mTasks.clear();
-        mTasksPool.getQueue().clear();
+        for (Future future : mSubmitedTasks.values()) {
+            future.cancel(true);
+        }
     }
 
     private int extractId(Runnable runnable) {

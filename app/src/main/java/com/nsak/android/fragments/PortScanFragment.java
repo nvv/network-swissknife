@@ -1,14 +1,14 @@
 package com.nsak.android.fragments;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.nsak.android.Constants;
+import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.adapters.PortsAdapter;
 import com.nsak.android.network.Port;
 import com.nsak.android.network.db.PortServiceDbAdapter;
@@ -49,7 +49,7 @@ public class PortScanFragment extends Fragment {
         Observable.from(PortServiceDbAdapter.getPortsForScan()).filter(new Func1<Port, Boolean>() {
             @Override
             public Boolean call(Port port) {
-                return NetworkUtils.udpScan(getArguments().getString(Constants.EXTRA_HOST_TO_SCAN), port.port, 200);
+                return NetworkUtils.udpScan(getArguments().getString(NetworkScanActivity.ARG_SELECTED_HOST), port.port, 200);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Port>() {
             @Override

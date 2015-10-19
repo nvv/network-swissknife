@@ -198,8 +198,8 @@ public class NetworkScanner {
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignore) {
+                //e.printStackTrace();
             }
 
             Log.d(TAG, "Done " + mIp + " : " + isReachable);

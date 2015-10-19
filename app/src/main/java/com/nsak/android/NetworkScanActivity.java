@@ -1,23 +1,31 @@
 package com.nsak.android;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.widget.TextView;
 
 import com.nsak.android.fragments.NetworkScanFragment;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 
 /**
  * @author Vlad Namashko.
  */
-public class NetworkScanActivity extends BaseDrawerActivity {
+public class NetworkScanActivity extends BaseDrawerActivity implements NetworkScanActivityInterface {
+
+    public static final String ARG_SELECTED_HOST = "arg_selected_host";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setToolbar(R.layout.toolbar_network_scan);
         setContentView(new NetworkScanFragment());
     }
 
+    @Override
+    public void setViewToolbar(int layout, boolean setBackArrow) {
+        setToolbar(layout, setBackArrow);
+    }
+
+    @Override
+    public void replaceFragment(Fragment fragment) {
+        setContentViewReplace(fragment);
+    }
 }

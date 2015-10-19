@@ -12,9 +12,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nsak.android.App;
+import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.adapters.HostsAdapter;
+import com.nsak.android.event.HostSelectedEvent;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
+import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 import com.nsak.android.network.Host;
 import com.nsak.android.network.NetworkScanner;
 import com.nsak.android.network.wifi.WifiInfo;
@@ -54,6 +57,7 @@ public class NetworkScanFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        ((NetworkScanActivityInterface) getActivity()).setViewToolbar(R.layout.toolbar_network_scan, false);
         View view = inflater.inflate(R.layout.fragment_network_scan, container, false);
         mScanNetworkSubscription = new CompositeSubscription();
         return view;
@@ -136,10 +140,12 @@ public class NetworkScanFragment extends Fragment {
                     mTotalHostCount = ((NetworkInfoDiscoveredEvent) msg.obj).hostsCount;
                     break;
                 case MSG_HOST_SELECTED:
-                    //stopScan();
-                    //Intent intent = new Intent(NetworkScanActivity.this, CommonResultsActivity.class);
-                    //intent.putExtra(Constants.EXTRA_HOST_TO_SCAN, ((HostSelectedEvent) msg.obj).host.ipAddress);
-                    //startActivity(intent);
+                    stopScan();
+                    HostDetailsFragment fragment = new HostDetailsFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(NetworkScanActivity.ARG_SELECTED_HOST, ((HostSelectedEvent) msg.obj).host.ipAddress);
+                    fragment.setArguments(bundle);
+                    ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
                     break;
             }
         }

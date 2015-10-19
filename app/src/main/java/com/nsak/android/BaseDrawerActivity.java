@@ -34,7 +34,6 @@ public class BaseDrawerActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -111,8 +110,20 @@ public class BaseDrawerActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    public void setContentViewReplace(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_view, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 
-    public void setToolbar(int resId) {
+    public void setToolbar(int resId, boolean setBackArrow) {
+        if (mToolbar.getChildCount() > 1) {
+            mToolbar.removeViewAt(0);
+        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(setBackArrow);
+        getSupportActionBar().setDisplayShowHomeEnabled(setBackArrow);
         mToolbar.addView(LayoutInflater.from(this).inflate(resId, null), 0);
     }
 
