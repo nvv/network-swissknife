@@ -1,9 +1,12 @@
 package com.nsak.android.core;
 
 import android.support.annotation.NonNull;
+import android.util.SparseArray;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executor;
@@ -24,7 +27,8 @@ public class ThreadPool implements Executor {
     private ThreadPoolExecutor mTasksPool;
     private ConcurrentMap<Integer, Runnable> mTasks = new ConcurrentHashMap<>();
 
-    private ConcurrentMap<Integer, Future> mSubmitedTasks = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Integer, Future> mSubmittedTasks = new ConcurrentHashMap<>();
+    private Set<Integer> mNetworkScanTasks = Collections.synchronizedSet(new HashSet<Integer>());
 
     public ThreadPool() {
         mTasksPool = new ThreadPoolExecutor(MAX_ACTIVE_LONG_TASKS / 2, MAX_ACTIVE_LONG_TASKS,
@@ -33,8 +37,10 @@ public class ThreadPool implements Executor {
             @Override
             protected void afterExecute(Runnable runnable, Throwable t) {
                 super.afterExecute(runnable, t);
-                mTasks.remove(extractId(runnable));
-                mSubmitedTasks.remove(extractId(runnable));
+                Integer id = extractId(runnable);
+                mTasks.remove(id);
+                mNetworkScanTasks.remove(id);
+                mSubmittedTasks.remove(id);
             }
 
         };
@@ -42,21 +48,37 @@ public class ThreadPool implements Executor {
 
     @Override
     public void execute(@NonNull Runnable runnable) {
-        int id = extractId(runnable);
+        Integer id = extractId(runnable);
         if (!mTasks.containsKey(id)) {
             mTasks.put(id, runnable);
-            mSubmitedTasks.put(id, mTasksPool.submit(runnable));
+            mSubmittedTasks.put(id, mTasksPool.submit(runnable));
         }
+    }
+
+    public void executeNetworkTask(@NonNull Runnable runnable) {
+        mNetworkScanTasks.add(extractId(runnable));
+        execute(runnable);
     }
 
     public void stopAllTasks() {
         mTasks.clear();
-        for (Future future : mSubmitedTasks.values()) {
+        mNetworkScanTasks.clear();
+        for (Future future : mSubmittedTasks.values()) {
             future.cancel(true);
         }
     }
 
-    private int extractId(Runnable runnable) {
+    public void stopNetworkScanTasks() {
+        for (Integer id : mSubmittedTasks.keySet()) {
+            if (mNetworkScanTasks.contains(id)) {
+                mNetworkScanTasks.remove(id);
+                mTasks.remove(id);
+                mSubmittedTasks.remove(id);
+            }
+        }
+    }
+
+    private Integer extractId(Runnable runnable) {
         return runnable instanceof ThreadPoolRunnable ? ((ThreadPoolRunnable) runnable).getId() : runnable.hashCode();
     }
 

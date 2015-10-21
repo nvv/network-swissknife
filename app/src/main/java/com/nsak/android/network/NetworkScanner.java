@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import jcifs.netbios.NbtAddress;
 import rx.Observable;
@@ -49,7 +50,7 @@ public class NetworkScanner {
 
     public void destroy() {
         stopScanning();
-        App.sInstance.getThreadPool().stopAllTasks();
+        App.sInstance.getThreadPool().stopNetworkScanTasks();
     }
 
     public Observable<Host> scanNetwork(final WifiInfo wifiInfo, final Handler handler) {
@@ -88,29 +89,24 @@ public class NetworkScanner {
                 Log.d(TAG, " Start network scan : " + stringIp + "/" + stringMask);
                 Log.d(TAG, "::::::::::::::::::::::::: ");
 
-                final CountDownLatch latch = new CountDownLatch(ips.length);
+                final AtomicInteger latch = new AtomicInteger(ips.length);
                 for (final String ip : ips) {
-                    App.sInstance.getThreadPool().execute(new ScanHostTask(ip) {
+                    App.sInstance.getThreadPool().executeNetworkTask(new ScanHostTask(ip) {
                         @Override
                         void onHostScanned(Host host) {
                             if (mReachableHosts.size() > 0 && mLastAvailableIpsCount != mReachableHosts.size()) {
                                 updateMacAddresses();
                                 mLastAvailableIpsCount = mReachableHosts.size();
                             }
-                            latch.countDown();
-                            subscriber.onNext(host);
+                            synchronized (subscriber) {
+                                subscriber.onNext(host);
+                            }
+                            if (latch.decrementAndGet() == 0) {
+                                subscriber.onCompleted();
+                            }
                         }
                     });
                 }
-
-                try {
-                    latch.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    subscriber.onError(e);
-                }
-
-                subscriber.onCompleted();
             }
 
             private synchronized void updateMacAddresses() {
