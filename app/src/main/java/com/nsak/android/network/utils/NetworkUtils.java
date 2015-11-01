@@ -5,12 +5,6 @@ import android.os.AsyncTask;
 import com.nsak.android.App;
 import com.nsak.android.utils.CommandLineUtils;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -99,6 +93,7 @@ public class NetworkUtils {
                 Map<String, String> ispInfo = new HashMap<>();
 
                 try {
+                    /*
                     HttpClient client = new DefaultHttpClient();
                     HttpResponse response = client.execute(new HttpGet(String.format("http://ipinfo.io/%s/json", ip.trim())));
                     StatusLine statusLine = response.getStatusLine();
@@ -116,6 +111,7 @@ public class NetworkUtils {
                         out.close();
 
                     }
+                    */
                 } catch (Exception e) {
                     e.printStackTrace();
                     return ispInfo;

@@ -4,4 +4,6 @@
     <color name="PrimaryDarkColor">#1976D2</color>
     <color name="MainTextColor">#ffffff</color>
     <color name="ListItemTextColorDark">#c20e070a</color>
+
+    <color name="white">#ffffff</color>
 </resources>

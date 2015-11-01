@@ -1,5 +1,7 @@
 package com.nsak.android.event;
 
+import android.view.View;
+
 import com.nsak.android.network.Host;
 
 /**
@@ -8,8 +10,10 @@ import com.nsak.android.network.Host;
 public class HostSelectedEvent {
 
     public Host host;
+    public View sharedView;
 
-    public HostSelectedEvent(Host host) {
+    public HostSelectedEvent(Host host, View sharedView) {
         this.host = host;
+        this.sharedView = sharedView;
     }
 }

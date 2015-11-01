@@ -1,13 +1,15 @@
 package com.nsak.android.fragments.intf;
 
-import android.app.Fragment;
+import android.view.View;
+
+import com.nsak.android.fragments.BaseFragment;
 
 /**
  * @author Vlad Namashko.
  */
 public interface NetworkScanActivityInterface {
 
-    void setViewToolbar(int layout, boolean setBackArrow);
+    void setViewToolbar(View toolbar);
 
-    void replaceFragment(Fragment fragment);
+    void replaceFragment(BaseFragment fragment);
 }

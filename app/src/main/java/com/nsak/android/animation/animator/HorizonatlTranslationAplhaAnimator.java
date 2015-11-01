@@ -1,4 +1,4 @@
-package com.nsak.android.animator;
+package com.nsak.android.animation.animator;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;

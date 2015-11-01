@@ -1,5 +1,6 @@
 package com.nsak.android.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +36,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author Vlad Namashko.
  */
-public class NetworkScanFragment extends Fragment {
+public class NetworkScanFragment extends BaseFragment {
 
     public static final int MSG_NETWORK_DISCOVERED = 0;
     public static final int MSG_HOST_SELECTED = 1;
@@ -53,11 +54,12 @@ public class NetworkScanFragment extends Fragment {
     private int mTotalHostCount;
     private int mScannedHost;
 
+    private String mSsid;
+
     private CompositeSubscription mScanNetworkSubscription;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ((NetworkScanActivityInterface) getActivity()).setViewToolbar(R.layout.toolbar_network_scan, false);
         View view = inflater.inflate(R.layout.fragment_network_scan, container, false);
         mScanNetworkSubscription = new CompositeSubscription();
         return view;
@@ -66,6 +68,7 @@ public class NetworkScanFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        updateToolbar();
         initView();
     }
 
@@ -84,10 +87,12 @@ public class NetworkScanFragment extends Fragment {
             WifiManager manager = App.sInstance.getWifiManager();
             WifiInfo wifiInfo = new WifiInfo(manager.getDhcpInfo(), manager.getConnectionInfo());
 
-            mNetworkSsid.setText(wifiInfo.getSsid());
+            mSsid = wifiInfo.getSsid();
+            mNetworkSsid.setText(mSsid);
 
             mNetworkScanner = new NetworkScanner();
             mScanNetworkSubscription.add(mNetworkScanner.scanNetwork(wifiInfo, mIncomingHandler).
+                    onBackpressureBuffer().
                     subscribeOn(Schedulers.computation()).
                     observeOn(AndroidSchedulers.mainThread()).
                     subscribe(new Observer<Host>() {
@@ -141,9 +146,12 @@ public class NetworkScanFragment extends Fragment {
                     break;
                 case MSG_HOST_SELECTED:
                     stopScan();
+                    HostSelectedEvent event = (HostSelectedEvent) msg.obj;
                     HostDetailsFragment fragment = new HostDetailsFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putString(NetworkScanActivity.ARG_SELECTED_HOST, ((HostSelectedEvent) msg.obj).host.ipAddress);
+                    bundle.putParcelable(NetworkScanActivity.ARG_SELECTED_HOST, event.host);
+                    bundle.putInt(NetworkScanActivity.ARG_SELECTED_ITEM_TOP, event.sharedView.getTop());
+                    bundle.putInt(NetworkScanActivity.ARG_SELECTED_ITEM_BOTTOM, event.sharedView.getHeight());
                     fragment.setArguments(bundle);
                     ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
                     break;
@@ -151,4 +159,27 @@ public class NetworkScanFragment extends Fragment {
         }
     };
 
+    @Override
+    public boolean isBackOnToolbar() {
+        return false;
+    }
+
+    @Override
+    public void onMovedToForeground() {
+        updateToolbar();
+        ButterKnife.inject(this, getActivity().findViewById(android.R.id.content));
+        mNetworkSsid.setText(mSsid);
+    }
+
+    @Override
+    public void resetViewAndPerformAction(Runnable action) {
+        action.run();
+    }
+
+    private void updateToolbar() {
+        if (getActivity() != null) {
+            ((NetworkScanActivityInterface) getActivity()).setViewToolbar(
+                    LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_network_scan, null));
+        }
+    }
 }

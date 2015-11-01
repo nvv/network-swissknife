@@ -1,6 +1,6 @@
 package com.nsak.android;
 
-import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
+import com.nsak.android.fragments.BaseFragment;
+
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * @author Vlad Namashko
@@ -24,6 +29,11 @@ public class BaseDrawerActivity extends AppCompatActivity {
     protected DrawerLayout mDrawerLayout;
     protected NavigationView mNavigationView;
     protected ViewGroup mContentView;
+
+    protected Deque<BaseFragment> mFragments = new LinkedList<>();
+
+    protected ActionBarDrawerToggle mActionBarDrawerToggle;
+    protected boolean mIsBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,27 +80,52 @@ public class BaseDrawerActivity extends AppCompatActivity {
 
         // Initializing Drawer Layout and ActionBarToggle
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,mToolbar,R.string.openDrawer, R.string.closeDrawer){
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,mToolbar, R.string.openDrawer, R.string.closeDrawer){
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
                 super.onDrawerClosed(drawerView);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-
                 super.onDrawerOpened(drawerView);
             }
         };
 
-        //Setting the actionbarToggle to drawer layout
-        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+        mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
 
-        //calling sync state is necessay or else your hamburger icon wont show up
-        actionBarDrawerToggle.syncState();
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mIsBackButton) {
+                    onBackPressed();
+                } else {
+                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                }
+            }
+        });
+
+        mActionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onBackPressed() {
+        final FragmentManager manager = getFragmentManager();
+        if (manager.getBackStackEntryCount() > 0) {
+            mFragments.getFirst().resetViewAndPerformAction(new Runnable() {
+                @Override
+                public void run() {
+                    manager.popBackStack();
+                    mFragments.pop();
+                    BaseFragment fragment = mFragments.getFirst();
+                    updateToolbarState(fragment);
+                    fragment.onMovedToForeground();
+                }
+            });
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -103,28 +138,47 @@ public class BaseDrawerActivity extends AppCompatActivity {
         mContentView.addView(LayoutInflater.from(this).inflate(resId, null), 0);
     }
 
-    public void setContentView(Fragment fragment) {
+    public void setContentView(BaseFragment fragment) {
         mContentView.removeAllViews();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.content_view,fragment);
+        fragmentTransaction.add(R.id.content_view, fragment);
         fragmentTransaction.commit();
+        mFragments.push(fragment);
+        updateToolbarState(mFragments.getFirst());
     }
 
-    public void setContentViewReplace(Fragment fragment) {
+    public void setContentViewReplace(BaseFragment fragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_view, fragment);
+        fragmentTransaction.add(R.id.content_view, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+        mFragments.push(fragment);
+        updateToolbarState(mFragments.getFirst());
     }
 
-    public void setToolbar(int resId, boolean setBackArrow) {
+    public void setToolbar(View toolbar) {
         if (mToolbar.getChildCount() > 1) {
             mToolbar.removeViewAt(0);
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(setBackArrow);
-        getSupportActionBar().setDisplayShowHomeEnabled(setBackArrow);
-        mToolbar.addView(LayoutInflater.from(this).inflate(resId, null), 0);
+        mToolbar.addView(toolbar, 0);
     }
 
+    private void updateToolbarState(BaseFragment fragment) {
+        if (fragment.isBackOnToolbar()) {
+            mIsBackButton = true;
+            setBackArrowVisibility(true);
+        } else {
+            mIsBackButton = false;
+            setBackArrowVisibility(false);
+            mActionBarDrawerToggle.syncState();
+            setTitle(null);
+        }
+    }
+
+    private void setBackArrowVisibility(boolean value) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(value);
+        getSupportActionBar().setDisplayShowHomeEnabled(value);
+
+    }
 }

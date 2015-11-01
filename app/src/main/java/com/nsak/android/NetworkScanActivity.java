@@ -1,8 +1,9 @@
 package com.nsak.android;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.view.View;
 
+import com.nsak.android.fragments.BaseFragment;
 import com.nsak.android.fragments.NetworkScanFragment;
 import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 
@@ -12,6 +13,8 @@ import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 public class NetworkScanActivity extends BaseDrawerActivity implements NetworkScanActivityInterface {
 
     public static final String ARG_SELECTED_HOST = "arg_selected_host";
+    public static final String ARG_SELECTED_ITEM_TOP = "arg_selected_item_top";
+    public static final String ARG_SELECTED_ITEM_BOTTOM = "arg_selected_item_bottom";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,12 +23,12 @@ public class NetworkScanActivity extends BaseDrawerActivity implements NetworkSc
     }
 
     @Override
-    public void setViewToolbar(int layout, boolean setBackArrow) {
-        setToolbar(layout, setBackArrow);
+    public void setViewToolbar(View toolbar) {
+        setToolbar(toolbar);
     }
 
     @Override
-    public void replaceFragment(Fragment fragment) {
+    public void replaceFragment(BaseFragment fragment) {
         setContentViewReplace(fragment);
     }
 }

@@ -89,7 +89,7 @@ public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHold
 
         @Override
         public void onClick(View v) {
-            mHandler.sendMessage(Message.obtain(null, NetworkScanFragment.MSG_HOST_SELECTED, new HostSelectedEvent(bindedHost)));
+            mHandler.sendMessage(Message.obtain(null, NetworkScanFragment.MSG_HOST_SELECTED, new HostSelectedEvent(bindedHost, v)));
         }
     }
 }
