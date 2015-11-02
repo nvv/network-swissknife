@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.nsak.android.network.utils.HardwareUtils;
+import com.nsak.android.utils.TextUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public class Host implements Parcelable {
     public String ipAddress = null;
     public int ipAddressInt = 0;
     public String hostname = null;
+    public String netBiosName = null;
     public String macAddress = HardwareUtils.NOMAC;
     public String nicVendor = "Unknown";
     public String os = "Unknown";
@@ -30,6 +32,11 @@ public class Host implements Parcelable {
     public ArrayList<Integer> portsOpen = null;
     public ArrayList<Integer> portsClosed = null;
 */
+
+    public String getName() {
+        return TextUtils.isNullOrEmpty(hostname) || ipAddress.equals(hostname) ? netBiosName : hostname;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -41,6 +48,7 @@ public class Host implements Parcelable {
         dest.writeString(ipAddress);
         dest.writeInt(ipAddressInt);
         dest.writeString(hostname);
+        dest.writeString(netBiosName);
         dest.writeString(macAddress);
         dest.writeString(nicVendor);
         dest.writeString(os);
@@ -55,6 +63,7 @@ public class Host implements Parcelable {
             host.ipAddress = in.readString();
             host.ipAddressInt = in.readInt();
             host.hostname = in.readString();
+            host.netBiosName = in.readString();
             host.macAddress = in.readString();
             host.nicVendor = in.readString();
             host.os = in.readString();

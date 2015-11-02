@@ -57,7 +57,7 @@ public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHold
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         final Host host = mItems.get(position);
         holder.hostIp.setText(host.ipAddress);
-        holder.hostName.setText(host.hostname);
+        holder.hostName.setText(host.getName());
         holder.hostMac.setText(host.macAddress);
         holder.hostVendor.setText(host.nicVendor);
         holder.bindedHost = host;

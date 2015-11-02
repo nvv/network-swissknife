@@ -22,7 +22,6 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jcifs.netbios.NbtAddress;
@@ -213,15 +212,13 @@ public class NetworkScanner {
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
-            if (host.hostname == null || host.hostname.equals(mIp)) {
-                host.hostname = getHostName(host.ipAddress);
-            }
+            host.netBiosName = getNetBiosName(host.ipAddress);
             mReachableHosts.put(mIp, host);
 
             Log.d(TAG, "Discovered host : " + mIp);
         }
 
-        private String getHostName(String ip) {
+        private String getNetBiosName(String ip) {
             try {
                 NbtAddress[] nbts = NbtAddress.getAllByAddress(ip);
                 return nbts[0].getHostName();

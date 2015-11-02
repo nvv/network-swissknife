@@ -70,7 +70,7 @@ public class HostDetailsFragment extends BaseFragment {
     private void initView() {
         ButterKnife.inject(this, mRootView);
         hostIp.setText(mSelectedHost.ipAddress);
-        hostName.setText(mSelectedHost.hostname);
+        hostName.setText(mSelectedHost.getName());
         hostMac.setText(mSelectedHost.macAddress);
         hostVendor.setText(mSelectedHost.nicVendor);
     }
