@@ -18,4 +18,9 @@
     <string name="openDrawer">Navigation View Closed</string>
 
     <string name="network_scanned">Scanned</string>
+    <string name="ip_address">IP Address</string>
+    <string name="host_name">Host Name</string>
+    <string name="mac_address">Mac Address</string>
+    <string name="vendor">Vendor</string>
+    <string name="netbios_name">NetBIOS Name</string>
 </resources>

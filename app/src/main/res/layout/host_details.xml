@@ -6,41 +6,107 @@
     android:layout_marginBottom="2dp"
     android:layout_marginLeft="2dp"
     android:layout_marginRight="2dp"
-    android:background="@color/white"
-    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+    android:orientation="horizontal"
     android:padding="12dp">
 
-    <TextView
-        android:id="@+id/host_ip"
-        style="@style/ListItemFont"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/host_name"
-        style="@style/ListItemFont"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+    <LinearLayout
+        android:id="@+id/labels"
+        android:visibility="gone"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/host_mac"
-        style="@style/ListItemFont"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        <TextView
+            android:text="IP Address"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/host_vendor"
-        style="@style/ListItemFont"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/host_name_label"
+            android:text="Host Name"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/netbios_name_label"
+            android:text="@string/netbios_name"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:text="Mac Address"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:text="Vendor"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/host_ip"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/host_name"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/netbios_name"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/host_mac"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/host_vendor"
+            style="@style/ListItemFont"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>
 

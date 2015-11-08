@@ -19,6 +19,7 @@ import com.nsak.android.R;
 import com.nsak.android.animation.evaluator.ViewBottomEvaluator;
 import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 import com.nsak.android.network.Host;
+import com.nsak.android.utils.TextUtils;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionInflater;
@@ -37,29 +38,52 @@ public class HostDetailsFragment extends BaseFragment {
 
     private View mRootView;
     private Host mSelectedHost;
-    private Scene mInitScene;
-    private Scene mHostDetailsScene;
-    private Transition mSceneTransition;
 
-    @InjectView(R.id.host_ip)
-    TextView hostIp;
-    @InjectView(R.id.host_name)
-    TextView hostName;
-    @InjectView(R.id.host_mac)
-    TextView hostMac;
-    @InjectView(R.id.host_vendor)
-    TextView hostVendor;
+    // in scenes
+    private Scene mInitScene;
+    private Scene mInitIntermediateScene;
+    private Scene mHostDetailsScene;
+
+    // out scenes
+    private Scene mOutIntermediateScene;
+
+    private Transition mChangeBoundsTransition;
+    private Transition mFadeTransition;
+    private Transition mOutTransition;
+
+    @Optional @InjectView(R.id.host_ip) TextView hostIp;
+    @Optional @InjectView(R.id.host_name) TextView hostName;
+    @Optional @InjectView(R.id.host_mac) TextView hostMac;
+    @Optional @InjectView(R.id.host_vendor) TextView hostVendor;
+    @Optional @InjectView(R.id.host_name_label) TextView hostNameLabel;
+    @Optional @InjectView(R.id.netbios_name) TextView netBiosName;
+    @Optional @InjectView(R.id.netbios_name_label) TextView netBiosNameLabel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mSelectedHost = getArguments().getParcelable(NetworkScanActivity.ARG_SELECTED_HOST);
         mRootView = inflater.inflate(R.layout.host_details_fragment, container, false);
 
-        mSceneTransition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.host_details_init_interpolator);
+        mChangeBoundsTransition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_bounds_transform_transition_500);
+        mFadeTransition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.fade_transition_250);
+        mOutTransition = TransitionInflater.from(getActivity()).inflateTransition(R.transition.change_transform_fade_transition_500);
 
         mInitScene = Scene.getSceneForLayout((ViewGroup) mRootView,
                 R.layout.network_host,
                 getActivity());
+
+        mInitIntermediateScene = Scene.getSceneForLayout((ViewGroup) mRootView,
+                R.layout.host_details_intermediate_state,
+                getActivity());
+
+        mHostDetailsScene = Scene.getSceneForLayout((ViewGroup) mRootView,
+                R.layout.host_details,
+                getActivity());
+
+        mOutIntermediateScene = Scene.getSceneForLayout((ViewGroup) mRootView,
+                R.layout.host_details_intermediate_state_out,
+                getActivity());
+
         mInitScene.enter();
 
         initView();
@@ -69,10 +93,10 @@ public class HostDetailsFragment extends BaseFragment {
 
     private void initView() {
         ButterKnife.inject(this, mRootView);
-        hostIp.setText(mSelectedHost.ipAddress);
-        hostName.setText(mSelectedHost.getName());
-        hostMac.setText(mSelectedHost.macAddress);
-        hostVendor.setText(mSelectedHost.nicVendor);
+        if (hostIp != null) hostIp.setText(mSelectedHost.ipAddress);
+        if (hostName != null) hostName.setText(mSelectedHost.getName());
+        if (hostMac != null) hostMac.setText(mSelectedHost.macAddress);
+        if (hostVendor != null) hostVendor.setText(mSelectedHost.nicVendor);
     }
 
     @Override
@@ -93,34 +117,56 @@ public class HostDetailsFragment extends BaseFragment {
         set.setDuration(500);
         set.setInterpolator(new DecelerateInterpolator());
 
-        set.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
+        if (enter) {
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (enter) {
-                    mHostDetailsScene = Scene.getSceneForLayout((ViewGroup) mRootView,
-                            R.layout.host_details,
-                            getActivity());
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    doAfterTransitionEnd(mFadeTransition, new Runnable() {
+                        @Override
+                        public void run() {
+                            doAfterTransitionEnd(mChangeBoundsTransition, new Runnable() {
+                                @Override
+                                public void run() {
+                                    mRootView.findViewById(R.id.labels).setVisibility(View.VISIBLE);
+                                    mRootView.findViewById(R.id.device_info_section_labels).setVisibility(View.VISIBLE);
 
-                    TransitionManager.go(mHostDetailsScene, mSceneTransition);
+                                    hostName.setText(mSelectedHost.hostname);
+                                    if (mSelectedHost.hostname == null) {
+                                        hostNameLabel.setVisibility(View.GONE);
+                                        hostName.setVisibility(View.GONE);
+                                    }
+                                    netBiosName.setText(mSelectedHost.netBiosName);
+                                    if (TextUtils.isNullOrEmpty(mSelectedHost.netBiosName)) {
+                                        netBiosNameLabel.setVisibility(View.GONE);
+                                        netBiosName.setVisibility(View.GONE);
+                                    }
 
+                                    mRootView.findViewById(R.id.network_info_label).setVisibility(View.VISIBLE);
+                                    mRootView.findViewById(R.id.device_info_label).setVisibility(View.VISIBLE);
+                                }
+                            });
+                            TransitionManager.go(mHostDetailsScene, mChangeBoundsTransition);
+                            initView();
+                        }
+                    });
+                    TransitionManager.go(mInitIntermediateScene, mFadeTransition);
                     initView();
                 }
-            }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
+                @Override
+                public void onAnimationCancel(Animator animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
-
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+        }
         return set;
     }
 
@@ -148,8 +194,25 @@ public class HostDetailsFragment extends BaseFragment {
 
     @Override
     public void resetViewAndPerformAction(final Runnable action) {
+        doAfterTransitionEnd(mOutTransition, new Runnable() {
+            @Override
+            public void run() {
+                doAfterTransitionEnd(mChangeBoundsTransition, new Runnable() {
+                    @Override
+                    public void run() {
+                        action.run();
+                    }
+                });
+                TransitionManager.go(mInitScene, mChangeBoundsTransition);
+                initView();
+            }
+        });
+        TransitionManager.go(mOutIntermediateScene, mOutTransition);
+        initView();
+    }
 
-        mSceneTransition.addListener(new Transition.TransitionListener() {
+    private void doAfterTransitionEnd(Transition transition, final Runnable action) {
+        transition.addListener(new Transition.TransitionListener() {
             @Override
             public void onTransitionStart(Transition transition) {
 
@@ -157,6 +220,7 @@ public class HostDetailsFragment extends BaseFragment {
 
             @Override
             public void onTransitionEnd(Transition transition) {
+                transition.removeListener(this);
                 action.run();
             }
 
@@ -175,7 +239,5 @@ public class HostDetailsFragment extends BaseFragment {
 
             }
         });
-        TransitionManager.go(mInitScene, mSceneTransition);
-        initView();
-    }
+    };
 }
