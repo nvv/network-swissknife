@@ -1,4 +1,4 @@
-package com.nsak.android.network.db;
+package com.nsak.android.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,13 +6,10 @@ import android.database.sqlite.SQLiteDatabase;
 import com.nsak.android.App;
 import com.nsak.android.network.Port;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import static com.nsak.android.network.db.PortServiceDbAdapter.Columns.*;
+import static com.nsak.android.db.PortServiceDbAdapter.Columns.*;
 
 /**
  * @author Vlad Namashko.

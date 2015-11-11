@@ -1,13 +1,9 @@
-package com.nsak.android.network.db;
+package com.nsak.android.db;
 
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.nsak.android.App;
-
-import static com.nsak.android.network.db.VendorDbAdapter.Columns.MAC;
-import static com.nsak.android.network.db.VendorDbAdapter.Columns.VENDOR;
+import static com.nsak.android.db.VendorDbAdapter.Columns.MAC;
+import static com.nsak.android.db.VendorDbAdapter.Columns.VENDOR;
 
 /**
  * @author Vlad Namashko.

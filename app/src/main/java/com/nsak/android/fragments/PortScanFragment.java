@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.adapters.PortsAdapter;
 import com.nsak.android.network.Port;
-import com.nsak.android.network.db.PortServiceDbAdapter;
+import com.nsak.android.db.PortServiceDbAdapter;
 import com.nsak.android.network.utils.NetworkUtils;
 import com.nsak.android.ui.widget.DividerItemDecoration;
 

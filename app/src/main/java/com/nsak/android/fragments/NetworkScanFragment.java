@@ -1,7 +1,5 @@
 package com.nsak.android.fragments;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +14,8 @@ import com.nsak.android.App;
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.adapters.HostsAdapter;
+import com.nsak.android.db.HostDbAdapter;
+import com.nsak.android.db.NetworkDbAdapter;
 import com.nsak.android.event.HostSelectedEvent;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
 import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
@@ -25,9 +25,11 @@ import com.nsak.android.network.wifi.WifiInfo;
 import com.nsak.android.network.wifi.WifiManager;
 import com.nsak.android.ui.widget.DividerItemDecoration;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.Optional;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -58,6 +60,9 @@ public class NetworkScanFragment extends BaseFragment {
 
     private CompositeSubscription mScanNetworkSubscription;
 
+    private List<Host> mReacheableHosts = new LinkedList<>();
+    private long mCurrentNetworkId;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_network_scan, container, false);
@@ -85,12 +90,16 @@ public class NetworkScanFragment extends BaseFragment {
 
         try {
             WifiManager manager = App.sInstance.getWifiManager();
-            WifiInfo wifiInfo = new WifiInfo(manager.getDhcpInfo(), manager.getConnectionInfo());
+            final WifiInfo wifiInfo = new WifiInfo(manager.getDhcpInfo(), manager.getConnectionInfo());
 
             mSsid = wifiInfo.getSsid();
             mNetworkSsid.setText(mSsid);
 
             mNetworkScanner = new NetworkScanner();
+
+            mCurrentNetworkId = NetworkDbAdapter.saveNetwork(wifiInfo);
+            mAdapter.setItems(HostDbAdapter.getHosts(mCurrentNetworkId));
+
             mScanNetworkSubscription.add(mNetworkScanner.scanNetwork(wifiInfo, mIncomingHandler).
                     onBackpressureBuffer().
                     subscribeOn(Schedulers.computation()).
@@ -98,6 +107,7 @@ public class NetworkScanFragment extends BaseFragment {
                     subscribe(new Observer<Host>() {
                         @Override
                         public void onCompleted() {
+                            HostDbAdapter.saveHosts(mCurrentNetworkId, mReacheableHosts);
                             mScanNetworkSubscription.unsubscribe();
                             mScannedHosts.setText(getString(R.string.network_scanned));
                         }
@@ -111,8 +121,9 @@ public class NetworkScanFragment extends BaseFragment {
                         @Override
                         public void onNext(Host host) {
                             mScannedHost++;
-                            if (host.isReacheble) {
+                            if (host.isReachable) {
                                 mAdapter.addItem(host);
+                                mReacheableHosts.add(host);
                             }
 
                             int per = 0;
@@ -135,7 +146,10 @@ public class NetworkScanFragment extends BaseFragment {
 
     private void stopScan() {
         mScanNetworkSubscription.unsubscribe();
-        mNetworkScanner.destroy();
+        if (mNetworkScanner != null) {
+            mNetworkScanner.destroy();
+        }
+        HostDbAdapter.saveHosts(mCurrentNetworkId, mReacheableHosts);
     }
 
     private Handler mIncomingHandler = new Handler() {

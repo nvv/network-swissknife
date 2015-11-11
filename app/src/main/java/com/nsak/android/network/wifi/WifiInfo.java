@@ -39,6 +39,7 @@ public class WifiInfo {
         for (InterfaceAddress address : interfaceAddresses) {
             if (address.getAddress().getHostAddress().equals(mIpAddressString)) {
                 mMaskCidr = address.getNetworkPrefixLength();
+                break;
             }
         }
 
@@ -75,5 +76,17 @@ public class WifiInfo {
 
     public String getSsid() {
         return mSsid;
+    }
+
+    public String getBssid() {
+        return mBssid;
+    }
+
+    public String getDns() {
+        return mDns;
+    }
+
+    public String getGatewayString() {
+        return mGatewayString;
     }
 }

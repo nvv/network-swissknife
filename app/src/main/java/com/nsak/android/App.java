@@ -37,6 +37,9 @@ public class App extends Application {
     @Override
     public void onTerminate() {
         NetworkConnectionManager.shutdown();
+        if (mDatabase != null) {
+            mDatabase.close();
+        }
         super.onTerminate();
     }
 

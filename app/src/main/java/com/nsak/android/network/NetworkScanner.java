@@ -4,7 +4,7 @@ import com.nsak.android.App;
 import com.nsak.android.core.ThreadPoolRunnable;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
 import com.nsak.android.fragments.NetworkScanFragment;
-import com.nsak.android.network.db.VendorDbAdapter;
+import com.nsak.android.db.VendorDbAdapter;
 import com.nsak.android.network.exceptions.NetworkScanException;
 import com.nsak.android.network.utils.HardwareUtils;
 import com.nsak.android.network.utils.NetworkCalculator;
@@ -200,13 +200,16 @@ public class NetworkScanner {
             Log.d(TAG, "Done " + mIp + " : " + isReachable);
 
             if (mIsScanning) {
+                if (isReachable) {
+                    host.discoveredTime = System.currentTimeMillis();
+                }
                 onHostScanned(host);
             }
         }
 
         private void addHost(Host host) {
             host.ipAddressInt = NetworkCalculator.ipStringToInt(mIp);
-            host.isReacheble = true;
+            host.isReachable = true;
             try {
                 host.hostname = InetAddress.getByAddress(NetworkCalculator.ipIntToByteArray(host.ipAddressInt)).getHostName();
             } catch (UnknownHostException e) {

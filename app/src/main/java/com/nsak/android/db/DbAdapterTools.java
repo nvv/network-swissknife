@@ -1,4 +1,4 @@
-package com.nsak.android.network.db;
+package com.nsak.android.db;
 
 import android.content.ContentValues;
 import android.content.res.AssetManager;

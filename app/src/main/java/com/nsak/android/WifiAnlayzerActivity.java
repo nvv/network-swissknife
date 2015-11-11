@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.nsak.android.network.db.VendorDbAdapter;
+import com.nsak.android.db.VendorDbAdapter;
 import com.nsak.android.ui.widget.DividerItemDecoration;
 
 import java.util.List;

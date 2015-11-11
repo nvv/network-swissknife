@@ -1,13 +1,16 @@
 package com.nsak.android.adapters;
 
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.nsak.android.App;
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.event.HostSelectedEvent;
@@ -26,6 +29,7 @@ import butterknife.InjectView;
 public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHolder> {
 
     protected final List<Host> mItems = new ArrayList<>();
+    protected final SparseArray<Host> mItemsMap = new SparseArray<>();
     protected Handler mHandler;
 
     public HostsAdapter(Handler handler) {
@@ -41,9 +45,15 @@ public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHold
             }
         }
 
-        mItems.add(pos, item);
-
-        notifyItemInserted(pos);
+        Host host = mItemsMap.get(item.ipAddressInt);
+        if (host != null && host.macAddress.equals(item.macAddress)) {
+            host.updateState(item);
+            notifyItemChanged(pos);
+        } else {
+            mItems.add(pos, item);
+            mItemsMap.put(item.ipAddressInt, item);
+            notifyItemInserted(pos);
+        }
     }
 
     @Override
@@ -61,11 +71,25 @@ public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHold
         holder.hostMac.setText(host.macAddress);
         holder.hostVendor.setText(host.nicVendor);
         holder.bindedHost = host;
+
+        @SuppressWarnings("deprecation")
+        int color = App.sInstance.getResources().getColor(host.isReachable ? R.color.ListItemTextColorDark : R.color.ListItemDisabledTextColor);
+
+        holder.hostIp.setTextColor(color);
+        holder.hostName.setTextColor(color);
+        holder.hostMac.setTextColor(color);
+        holder.hostVendor.setTextColor(color);
     }
 
     @Override
     public int getItemCount() {
         return mItems.size();
+    }
+
+    public void setItems(List<Host> hosts) {
+        for (Host host : hosts) {
+            addItem(host);
+        }
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {

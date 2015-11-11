@@ -7,5 +7,6 @@
     <color name="PrimaryDarkColor">#1976D2</color>
     <color name="MainTextColor">@color/white</color>
     <color name="ListItemTextColorDark">#c20e070a</color>
+    <color name="ListItemDisabledTextColor">#c2a6949b</color>
 
 </resources>

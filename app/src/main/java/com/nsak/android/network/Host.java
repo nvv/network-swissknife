@@ -6,18 +6,15 @@ import android.os.Parcelable;
 import com.nsak.android.network.utils.HardwareUtils;
 import com.nsak.android.utils.TextUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * @author Vlad Namashko.
  */
 public class Host implements Parcelable {
 
     public static final int TYPE_GATEWAY = 0;
-    public static final int TYPE_COMPUTER = 1;
+    public static final int TYPE_DEVICE = 1;
 
-    public int deviceType = TYPE_COMPUTER;
+    public int deviceType = TYPE_DEVICE;
     public String ipAddress = null;
     public int ipAddressInt = 0;
     public String hostname = null;
@@ -25,7 +22,11 @@ public class Host implements Parcelable {
     public String macAddress = HardwareUtils.NOMAC;
     public String nicVendor = "Unknown";
     public String os = "Unknown";
-    public boolean isReacheble;
+    public boolean isReachable;
+
+    public long discoveredTime;
+    public long firstDiscovered;
+    public long lastSeen;
 /*
     public HashMap<Integer, String> services = null;
     public HashMap<Integer, String> banners = null;
@@ -35,6 +36,14 @@ public class Host implements Parcelable {
 
     public String getName() {
         return TextUtils.isNullOrEmpty(hostname) || ipAddress.equals(hostname) ? netBiosName : hostname;
+    }
+
+    public void updateState(Host host) {
+        deviceType = host.deviceType;
+        hostname = host.hostname;
+        netBiosName = host.netBiosName;
+        isReachable = true;
+        lastSeen = host.discoveredTime;
     }
 
     @Override
@@ -52,7 +61,9 @@ public class Host implements Parcelable {
         dest.writeString(macAddress);
         dest.writeString(nicVendor);
         dest.writeString(os);
-        dest.writeInt(isReacheble ? 1 : 0);
+        dest.writeInt(isReachable ? 1 : 0);
+        dest.writeLong(firstDiscovered);
+        dest.writeLong(lastSeen);
     }
 
     public static final Parcelable.Creator<Host> CREATOR = new Parcelable.Creator<Host>() {
@@ -67,7 +78,9 @@ public class Host implements Parcelable {
             host.macAddress = in.readString();
             host.nicVendor = in.readString();
             host.os = in.readString();
-            host.isReacheble = in.readInt() == 1;
+            host.isReachable = in.readInt() == 1;
+            host.firstDiscovered = in.readLong();
+            host.lastSeen = in.readLong();
 
             return host;
         }
