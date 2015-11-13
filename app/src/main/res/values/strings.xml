@@ -23,4 +23,13 @@
     <string name="mac_address">Mac Address</string>
     <string name="vendor">Vendor</string>
     <string name="netbios_name">NetBIOS Name</string>
+    <string name="network_info">Network Info</string>
+    <string name="device_info">Device Info</string>
+    <string name="general_info">General Info</string>
+    <string name="first_discovered">First Discovered</string>
+    <string name="last_seen">Last Seen</string>
+    <string name="status">Status</string>
+
+    <string name="status_up">Up</string>
+    <string name="status_down">Down</string>
 </resources>

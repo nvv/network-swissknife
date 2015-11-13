@@ -25,6 +25,10 @@ import com.transitionseverywhere.Transition;
 import com.transitionseverywhere.TransitionInflater;
 import com.transitionseverywhere.TransitionManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import static com.nsak.android.NetworkScanActivity.*;
 
 import butterknife.ButterKnife;
@@ -51,13 +55,24 @@ public class HostDetailsFragment extends BaseFragment {
     private Transition mFadeTransition;
     private Transition mOutTransition;
 
+    private SimpleDateFormat mDateFormat = new SimpleDateFormat("dd MMM yyyy  HH:mm", Locale.US);
+
     @Optional @InjectView(R.id.host_ip) TextView hostIp;
     @Optional @InjectView(R.id.host_name) TextView hostName;
     @Optional @InjectView(R.id.host_mac) TextView hostMac;
     @Optional @InjectView(R.id.host_vendor) TextView hostVendor;
     @Optional @InjectView(R.id.host_name_label) TextView hostNameLabel;
     @Optional @InjectView(R.id.netbios_name) TextView netBiosName;
+    @Optional @InjectView(R.id.first_discovered) TextView firstDiscovered;
+    @Optional @InjectView(R.id.last_seen) TextView lastSeen;
     @Optional @InjectView(R.id.netbios_name_label) TextView netBiosNameLabel;
+    @Optional @InjectView(R.id.network_info_label) TextView networkInfoLabel;
+    @Optional @InjectView(R.id.device_info_label) TextView deviceInfoLabel;
+    @Optional @InjectView(R.id.general_info_label) TextView generalInfoLabel;
+    @Optional @InjectView(R.id.network_info_section_labels) View networkInfoSectionLabels;
+    @Optional @InjectView(R.id.device_info_section_labels) View deviceInfoSectionLabels;
+    @Optional @InjectView(R.id.general_info_section) View generalInfoSection;
+    @Optional @InjectView(R.id.status) TextView status;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,10 +108,10 @@ public class HostDetailsFragment extends BaseFragment {
 
     private void initView() {
         ButterKnife.inject(this, mRootView);
-        if (hostIp != null) hostIp.setText(mSelectedHost.ipAddress);
-        if (hostName != null) hostName.setText(mSelectedHost.getName());
-        if (hostMac != null) hostMac.setText(mSelectedHost.macAddress);
-        if (hostVendor != null) hostVendor.setText(mSelectedHost.nicVendor);
+        hostIp.setText(mSelectedHost.ipAddress);
+        hostName.setText(mSelectedHost.getName());
+        hostMac.setText(mSelectedHost.macAddress);
+        hostVendor.setText(mSelectedHost.nicVendor);
     }
 
     @Override
@@ -131,22 +146,37 @@ public class HostDetailsFragment extends BaseFragment {
                             doAfterTransitionEnd(mChangeBoundsTransition, new Runnable() {
                                 @Override
                                 public void run() {
-                                    mRootView.findViewById(R.id.labels).setVisibility(View.VISIBLE);
-                                    mRootView.findViewById(R.id.device_info_section_labels).setVisibility(View.VISIBLE);
+                                    // need to be done in post to ensure that scene transition is finished.
+                                    mRootView.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            networkInfoSectionLabels.setVisibility(View.VISIBLE);
+                                            deviceInfoSectionLabels.setVisibility(View.VISIBLE);
 
-                                    hostName.setText(mSelectedHost.hostname);
-                                    if (mSelectedHost.hostname == null) {
-                                        hostNameLabel.setVisibility(View.GONE);
-                                        hostName.setVisibility(View.GONE);
-                                    }
-                                    netBiosName.setText(mSelectedHost.netBiosName);
-                                    if (TextUtils.isNullOrEmpty(mSelectedHost.netBiosName)) {
-                                        netBiosNameLabel.setVisibility(View.GONE);
-                                        netBiosName.setVisibility(View.GONE);
-                                    }
+                                            hostName.setText(mSelectedHost.hostname);
+                                            if (TextUtils.isNullOrEmpty(mSelectedHost.hostname)) {
+                                                hostNameLabel.setVisibility(View.GONE);
+                                                hostName.setVisibility(View.GONE);
+                                            }
+                                            netBiosName.setText(mSelectedHost.netBiosName);
+                                            if (TextUtils.isNullOrEmpty(mSelectedHost.netBiosName)) {
+                                                netBiosNameLabel.setVisibility(View.GONE);
+                                                netBiosName.setVisibility(View.GONE);
+                                                netBiosNameLabel.invalidate();
+                                            }
 
-                                    mRootView.findViewById(R.id.network_info_label).setVisibility(View.VISIBLE);
-                                    mRootView.findViewById(R.id.device_info_label).setVisibility(View.VISIBLE);
+                                            firstDiscovered.setText(mDateFormat.format(new Date(mSelectedHost.firstDiscovered)));
+                                            lastSeen.setText(mDateFormat.format(new Date(mSelectedHost.lastSeen)));
+
+                                            status.setText(mSelectedHost.isReachable ? R.string.status_up : R.string.status_down);
+
+                                            networkInfoLabel.setVisibility(View.VISIBLE);
+                                            deviceInfoLabel.setVisibility(View.VISIBLE);
+
+                                            generalInfoSection.setVisibility(View.VISIBLE);
+                                            generalInfoLabel.setVisibility(View.VISIBLE);
+                                        }
+                                    });
                                 }
                             });
                             TransitionManager.go(mHostDetailsScene, mChangeBoundsTransition);

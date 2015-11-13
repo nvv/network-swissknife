@@ -8,15 +8,15 @@ import android.view.View;
 
 public class ViewBottomEvaluator extends IntEvaluator {
 
-    private View v;
+    private View mView;
     public ViewBottomEvaluator(View v) {
-        this.v = v;
+        mView = v;
     }
 
     @Override
     public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
         int num = super.evaluate(fraction, startValue, endValue);
-        v.setBottom(num);
+        mView.setBottom(num);
         return num;
     }
 

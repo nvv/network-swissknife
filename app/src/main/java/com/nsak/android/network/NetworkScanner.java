@@ -211,7 +211,10 @@ public class NetworkScanner {
             host.ipAddressInt = NetworkCalculator.ipStringToInt(mIp);
             host.isReachable = true;
             try {
-                host.hostname = InetAddress.getByAddress(NetworkCalculator.ipIntToByteArray(host.ipAddressInt)).getHostName();
+                String hostname = InetAddress.getByAddress(NetworkCalculator.ipIntToByteArray(host.ipAddressInt)).getHostName();
+                if (!host.ipAddress.equals(hostname)) {
+                    host.hostname = hostname;
+                }
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
@@ -223,8 +226,8 @@ public class NetworkScanner {
 
         private String getNetBiosName(String ip) {
             try {
-                NbtAddress[] nbts = NbtAddress.getAllByAddress(ip);
-                return nbts[0].getHostName();
+                NbtAddress[] nbtAddresses = NbtAddress.getAllByAddress(ip);
+                return nbtAddresses[0].getHostName();
             } catch (Exception e) {
                 e.printStackTrace();
             }
