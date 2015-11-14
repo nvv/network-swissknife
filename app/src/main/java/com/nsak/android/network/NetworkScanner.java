@@ -152,7 +152,7 @@ public class NetworkScanner {
         @Override
         public void run() {
 
-            Host host = mWifiInfo.getIpAddressString().equals(mIp) ? new Gateway(mWifiInfo) : new Host();
+            Host host = mWifiInfo.getGatewayString().equals(mIp) ? new Gateway(mWifiInfo) : new Host();
             host.ipAddress = mIp;
 
             boolean isReachable = false;
@@ -201,6 +201,8 @@ public class NetworkScanner {
             if (mIsScanning) {
                 if (isReachable) {
                     host.discoveredTime = System.currentTimeMillis();
+                    host.firstDiscovered = host.discoveredTime;
+                    host.lastSeen = host.discoveredTime;
                 }
                 onHostScanned(host);
             }

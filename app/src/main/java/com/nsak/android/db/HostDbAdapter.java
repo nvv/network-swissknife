@@ -56,6 +56,7 @@ public class HostDbAdapter {
             values.put(HOSTNAME, host.hostname);
             values.put(NETBIOS_NAME, host.netBiosName);
             values.put(LAST_SEEN, host.discoveredTime);
+            values.put(FIRST_DISCOVERED, host.discoveredTime);
 
             if (isHostExists(database, networkId, host.ipAddressInt, host.macAddress)) {
                 database.update(TABLE_NAME, values, String.format(NETWORK_ID + "=%1$d AND " +
