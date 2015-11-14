@@ -18,6 +18,7 @@ import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.animation.evaluator.ViewBottomEvaluator;
 import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
+import com.nsak.android.network.Gateway;
 import com.nsak.android.network.Host;
 import com.nsak.android.utils.TextUtils;
 import com.transitionseverywhere.Scene;
@@ -69,10 +70,17 @@ public class HostDetailsFragment extends BaseFragment {
     @Optional @InjectView(R.id.network_info_label) TextView networkInfoLabel;
     @Optional @InjectView(R.id.device_info_label) TextView deviceInfoLabel;
     @Optional @InjectView(R.id.general_info_label) TextView generalInfoLabel;
+    @Optional @InjectView(R.id.wifi_info_label) TextView wifiInfoLabel;
     @Optional @InjectView(R.id.network_info_section_labels) View networkInfoSectionLabels;
     @Optional @InjectView(R.id.device_info_section_labels) View deviceInfoSectionLabels;
     @Optional @InjectView(R.id.general_info_section) View generalInfoSection;
+    @Optional @InjectView(R.id.wifi_info_section) View wifiInfoSection;
     @Optional @InjectView(R.id.status) TextView status;
+    @Optional @InjectView(R.id.host_type) TextView type;
+    @Optional @InjectView(R.id.wifi_network_ssid) TextView ssid;
+    @Optional @InjectView(R.id.wifi_network_bssid) TextView bssid;
+    @Optional @InjectView(R.id.wifi_network_gateway) TextView gatewayView;
+    @Optional @InjectView(R.id.wifi_network_dns) TextView dns;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -169,6 +177,19 @@ public class HostDetailsFragment extends BaseFragment {
                                             lastSeen.setText(mDateFormat.format(new Date(mSelectedHost.lastSeen)));
 
                                             status.setText(mSelectedHost.isReachable ? R.string.status_up : R.string.status_down);
+
+                                            type.setText(mSelectedHost.deviceType == Host.TYPE_GATEWAY ? R.string.gateway : R.string.device);
+
+                                            if (mSelectedHost.deviceType == Host.TYPE_GATEWAY) {
+                                                wifiInfoLabel.setVisibility(View.VISIBLE);
+                                                wifiInfoSection.setVisibility(View.VISIBLE);
+
+                                                Gateway gateway = (Gateway) mSelectedHost;
+                                                ssid.setText(gateway.ssid);
+                                                bssid.setText(gateway.bssid);
+                                                gatewayView.setText(gateway.gateway);
+                                                dns.setText(gateway.dns);
+                                            }
 
                                             networkInfoLabel.setVisibility(View.VISIBLE);
                                             deviceInfoLabel.setVisibility(View.VISIBLE);

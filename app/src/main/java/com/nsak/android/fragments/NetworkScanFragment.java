@@ -98,7 +98,7 @@ public class NetworkScanFragment extends BaseFragment {
             mNetworkScanner = new NetworkScanner();
 
             mCurrentNetworkId = NetworkDbAdapter.saveNetwork(wifiInfo);
-            mAdapter.setItems(HostDbAdapter.getHosts(mCurrentNetworkId));
+            mAdapter.setItems(HostDbAdapter.getHosts(mCurrentNetworkId, wifiInfo));
 
             mScanNetworkSubscription.add(mNetworkScanner.scanNetwork(wifiInfo, mIncomingHandler).
                     onBackpressureBuffer().

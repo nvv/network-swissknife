@@ -36,12 +36,10 @@ import rx.functions.Func1;
 public class NetworkScanner {
 
     private String TAG = "Network Scanner";
-
     private final Map<String, Host> mReachableHosts = new ConcurrentHashMap<>();
-
     private boolean mIsScanning;
-
     private final static int[] DPORTS = {22, 135, 139, 445, 80};
+    private WifiInfo mWifiInfo;
 
     private void stopScanning() {
         mIsScanning = false;
@@ -53,6 +51,7 @@ public class NetworkScanner {
     }
 
     public Observable<Host> scanNetwork(final WifiInfo wifiInfo, final Handler handler) {
+        mWifiInfo = wifiInfo;
         return Observable.create(new Observable.OnSubscribe<Host>() {
             private HashMap<String, String> mAddresses = new HashMap<>();
             private int mLastAvailableIpsCount;
@@ -153,7 +152,7 @@ public class NetworkScanner {
         @Override
         public void run() {
 
-            Host host = new Host();
+            Host host = mWifiInfo.getIpAddressString().equals(mIp) ? new Gateway(mWifiInfo) : new Host();
             host.ipAddress = mIp;
 
             boolean isReachable = false;

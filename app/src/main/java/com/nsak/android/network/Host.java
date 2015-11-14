@@ -22,6 +22,7 @@ public class Host implements Parcelable {
     public String macAddress = HardwareUtils.NOMAC;
     public String nicVendor = "Unknown";
     public String os = "Unknown";
+    public boolean isCurrentDevice;
     public boolean isReachable;
 
     public long discoveredTime;
@@ -61,6 +62,7 @@ public class Host implements Parcelable {
         dest.writeString(macAddress);
         dest.writeString(nicVendor);
         dest.writeString(os);
+        dest.writeInt(isCurrentDevice ? 1 : 0);
         dest.writeInt(isReachable ? 1 : 0);
         dest.writeLong(firstDiscovered);
         dest.writeLong(lastSeen);
@@ -78,6 +80,7 @@ public class Host implements Parcelable {
             host.macAddress = in.readString();
             host.nicVendor = in.readString();
             host.os = in.readString();
+            host.isCurrentDevice = in.readInt() == 1;
             host.isReachable = in.readInt() == 1;
             host.firstDiscovered = in.readLong();
             host.lastSeen = in.readLong();

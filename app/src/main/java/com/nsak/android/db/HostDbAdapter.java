@@ -6,8 +6,10 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.nsak.android.App;
+import com.nsak.android.network.Gateway;
 import com.nsak.android.network.Host;
 import com.nsak.android.network.utils.NetworkCalculator;
+import com.nsak.android.network.wifi.WifiInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,10 @@ public class HostDbAdapter {
     }
 
     public static List<Host> getHosts(long networkId) {
+        return getHosts(networkId, null);
+    }
+
+    public static List<Host> getHosts(long networkId, WifiInfo info) {
         SQLiteDatabase database = App.sInstance.getDatabase();
         Cursor cursor = database.query(TABLE_NAME, null, networkId == -1 ? null : NETWORK_ID + "=" + networkId, null, null, null, null, null);
         
@@ -89,9 +95,11 @@ public class HostDbAdapter {
         int idxLastSeen = cursor.getColumnIndex(LAST_SEEN);
 
         while (cursor.moveToNext()) {
-            Host host = new Host();
-            host.ipAddressInt = cursor.getInt(idxIpAddress);
-            host.ipAddress = NetworkCalculator.ipIntToString(host.ipAddressInt);
+            int ipAddress = cursor.getInt(idxIpAddress);
+            String ipAddressString = NetworkCalculator.ipIntToString(ipAddress);
+            Host host = info != null && ipAddressString.equals(info.getGatewayString()) ? new Gateway(info) : new Host();
+            host.ipAddressInt = ipAddress;
+            host.ipAddress = ipAddressString;
             host.deviceType = cursor.getInt(idxDeviceType);
             host.hostname = cursor.getString(idxHostName);
             host.netBiosName = cursor.getString(idxNetbiosName);

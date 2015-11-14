@@ -1,257 +1,376 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/host_details_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="2dp"
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
-    android:animateLayoutChanges="true"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/network_info_label"
-        style="@style/ListItemFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="12dp"
-        android:textSize="17sp"
-        android:text="@string/network_info"
-        android:visibility="gone" />
-
-    <android.support.v7.widget.CardView
+    <LinearLayout
+        android:id="@+id/host_details_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="6dp">
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:padding="12dp">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/network_info_label"
+            style="@style/ListItemFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/network_info"
+            android:textSize="17sp"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/network_info_section_labels"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ip_address"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/host_name_label"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/host_name"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/netbios_name_label"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/netbios_name"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+            card_view:cardCornerRadius="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
-                <TextView
-                    android:id="@+id/host_ip"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/network_info_section_labels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/host_name"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ip_address"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/netbios_name"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/host_name_label"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/host_name"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/netbios_name_label"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/netbios_name"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/host_ip"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/host_name"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/netbios_name"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-    <TextView
-        android:id="@+id/device_info_label"
-        style="@style/ListItemFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:textSize="17sp"
-        android:layout_marginBottom="6dp"
-        android:text="@string/device_info"
-        android:visibility="gone"/>
+        <TextView
+            android:id="@+id/wifi_info_label"
+            style="@style/ListItemFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/wifi_info"
+            android:textSize="17sp"
+            android:visibility="gone" />
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/device_info_section"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="6dp">
-
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/wifi_info_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/device_info_section_labels"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mac_address"
-                    android:textStyle="bold" />
-
-                <TextView
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/vendor"
-                    android:textStyle="bold" />
-            </LinearLayout>
+            android:visibility="gone"
+            card_view:cardCornerRadius="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
-                <TextView
-                    android:id="@+id/host_mac"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/host_vendor"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ssid"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bssid"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gateway"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dns"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/wifi_network_ssid"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/wifi_network_bssid"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/wifi_network_gateway"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/wifi_network_dns"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-    <TextView
-        android:id="@+id/general_info_label"
-        style="@style/ListItemFont"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:textSize="17sp"
-        android:layout_marginBottom="6dp"
-        android:text="@string/general_info"
-        android:visibility="gone"/>
+        <TextView
+            android:id="@+id/device_info_label"
+            style="@style/ListItemFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/device_info"
+            android:textSize="17sp"
+            android:visibility="gone" />
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/general_info_section"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        card_view:cardCornerRadius="6dp">
-
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/device_info_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/first_discovered"
-                    android:textStyle="bold" />
-
-                <TextView
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/last_seen"
-                    android:textStyle="bold" />
-
-                <TextView
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/status"
-                    android:textStyle="bold" />
-            </LinearLayout>
+            card_view:cardCornerRadius="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
 
-                <TextView
-                    android:id="@+id/first_discovered"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/device_info_section_labels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <TextView
-                    android:id="@+id/last_seen"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mac_address"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/status"
-                    style="@style/ListItemFont"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold" />
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vendor"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/type"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/host_mac"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/host_vendor"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/host_type"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+        </android.support.v7.widget.CardView>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/general_info_label"
+            style="@style/ListItemFont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/general_info"
+            android:textSize="17sp"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/general_info_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="6dp"
+            card_view:cardCornerRadius="6dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="horizontal"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/first_discovered"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/last_seen"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/status"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/first_discovered"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/last_seen"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/status"
+                        style="@style/ListItemFont"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>
