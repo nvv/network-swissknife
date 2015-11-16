@@ -127,6 +127,9 @@ public class NetworkScanner {
                     @Override
                     public void call(Host host) {
                         String mac = mAddresses.get(host.ipAddress);
+                        if (host.isCurrentDevice && "02:00:00:00:00:00".equals(mac)) {
+                            mac = mWifiInfo.getMacAddress();
+                        }
                         host.macAddress = mac;
                         host.deviceType = mGatewayIp.equals(host.ipAddress) ? 0 : 1;
                         host.nicVendor = VendorDbAdapter.getVendor(Integer.parseInt(mac.substring(0, 8).replace(":", ""), 16));
@@ -154,6 +157,7 @@ public class NetworkScanner {
 
             Host host = mWifiInfo.getGatewayString().equals(mIp) ? new Gateway(mWifiInfo) : new Host();
             host.ipAddress = mIp;
+            host.isCurrentDevice = mIp.equals(mWifiInfo.getIpAddressString());
 
             boolean isReachable = false;
             try {

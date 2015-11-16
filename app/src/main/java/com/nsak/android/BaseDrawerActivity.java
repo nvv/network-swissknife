@@ -1,10 +1,14 @@
 package com.nsak.android;
 
+import android.Manifest;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,13 +21,19 @@ import android.view.ViewGroup;
 
 import com.nsak.android.fragments.BaseFragment;
 
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Vlad Namashko
  */
 public class BaseDrawerActivity extends AppCompatActivity {
+
+    final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 128;
 
     protected Toolbar mToolbar;
     protected DrawerLayout mDrawerLayout;
@@ -107,6 +117,50 @@ public class BaseDrawerActivity extends AppCompatActivity {
         });
 
         mActionBarDrawerToggle.syncState();
+    }
+
+    protected boolean askPermission(String[] permissions) {
+
+        if (Build.VERSION.SDK_INT < 23) {
+            return true;
+        }
+
+        final List<String> permissionsRequested = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
+                continue;
+            }
+            permissionsRequested.add(permission);
+        }
+
+        if (!permissionsRequested.isEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionsRequested.toArray(
+                    new String[permissionsRequested.size()]), REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+
+        return true;
+    }
+
+    protected void onPermissionsResult(Map<String, Integer> permissions) {
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
+
+                Map<String, Integer> hash = new HashMap<>();
+                for (int i = 0; i < permissions.length; i++) {
+                    hash.put(permissions[i], grantResults[i]);
+                }
+                onPermissionsResult(hash);
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override

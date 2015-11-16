@@ -1,6 +1,7 @@
 package com.nsak.android.network.wifi;
 
 import android.net.DhcpInfo;
+import android.support.annotation.NonNull;
 
 import com.nsak.android.network.utils.NetworkCalculator;
 
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.List;
 
 /**
@@ -25,6 +27,7 @@ public class WifiInfo {
     private String mDns;
     private String mSsid;
     private String mBssid;
+    private String mMacAddress;
     private int mSpeed;
     private int mFrequency;
 
@@ -35,13 +38,17 @@ public class WifiInfo {
 
         mMaskCidr = 24;
 
-        List<InterfaceAddress> interfaceAddresses = NetworkInterface.getByInetAddress(InetAddress.getByAddress(NetworkCalculator.ipIntToBytesReverted(dhcpInfo.ipAddress))).getInterfaceAddresses();
+        NetworkInterface networkInterface = NetworkInterface.getByInetAddress(
+                InetAddress.getByAddress(NetworkCalculator.ipIntToBytesReverted(dhcpInfo.ipAddress)));
+        List<InterfaceAddress> interfaceAddresses = networkInterface.getInterfaceAddresses();
         for (InterfaceAddress address : interfaceAddresses) {
             if (address.getAddress().getHostAddress().equals(mIpAddressString)) {
                 mMaskCidr = address.getNetworkPrefixLength();
                 break;
             }
         }
+
+        mMacAddress = extractMacAddress(networkInterface).toString();
 
         mMaskString = NetworkCalculator.ipBytesToString(NetworkCalculator.cidrToQuad(mMaskCidr));
 
@@ -56,6 +63,18 @@ public class WifiInfo {
         mSpeed = connectionInfo.getLinkSpeed();
 
         //mFrequency = connectionInfo.getFrequency();
+    }
+
+    @NonNull
+    protected StringBuilder extractMacAddress(NetworkInterface networkInterface) throws SocketException {
+        final StringBuilder buf = new StringBuilder();
+        for (int idx = 0; idx < networkInterface.getHardwareAddress().length; idx++) {
+            buf.append(String.format("%02X:", networkInterface.getHardwareAddress()[idx]));
+        }
+        if (buf.length() >= 0) {
+            buf.deleteCharAt(buf.length() - 1);
+        }
+        return buf;
     }
 
     public int getIpAddress() {
@@ -88,5 +107,9 @@ public class WifiInfo {
 
     public String getGatewayString() {
         return mGatewayString;
+    }
+
+    public String getMacAddress() {
+        return mMacAddress;
     }
 }
