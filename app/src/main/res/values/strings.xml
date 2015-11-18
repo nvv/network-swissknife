@@ -39,4 +39,5 @@
     <string name="ssid">SSID</string>
     <string name="bssid">BSSID</string>
     <string name="dns">DNS</string>
+    <string name="my_device">My Device</string>
 </resources>

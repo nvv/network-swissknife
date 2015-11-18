@@ -1,6 +1,8 @@
 package com.nsak.android;
 
 import android.Manifest;
+import android.animation.AnimatorInflater;
+import android.animation.ValueAnimator;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -18,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 
 import com.nsak.android.fragments.BaseFragment;
 
@@ -90,18 +94,7 @@ public class BaseDrawerActivity extends AppCompatActivity {
 
         // Initializing Drawer Layout and ActionBarToggle
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
-        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,mToolbar, R.string.openDrawer, R.string.closeDrawer){
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-            }
-
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
-        };
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,mToolbar, R.string.openDrawer, R.string.closeDrawer);
 
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
 
@@ -220,19 +213,32 @@ public class BaseDrawerActivity extends AppCompatActivity {
 
     private void updateToolbarState(BaseFragment fragment) {
         if (fragment.isBackOnToolbar()) {
+            setBackArrowVisibility(true, !mIsBackButton);
             mIsBackButton = true;
-            setBackArrowVisibility(true);
         } else {
+            setBackArrowVisibility(false, mIsBackButton);
             mIsBackButton = false;
-            setBackArrowVisibility(false);
             mActionBarDrawerToggle.syncState();
             setTitle(null);
         }
     }
 
-    private void setBackArrowVisibility(boolean value) {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(value);
-        getSupportActionBar().setDisplayShowHomeEnabled(value);
-
+    private void setBackArrowVisibility(boolean value, boolean runAnimation) {
+        if (runAnimation) {
+            ValueAnimator animator = (ValueAnimator) AnimatorInflater.loadAnimator(this,
+                    value ? R.animator.action_bar_arrow_in : R.animator.action_bar_arrow_out);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    float slideOffset = (Float) valueAnimator.getAnimatedValue();
+                    mActionBarDrawerToggle.onDrawerSlide(mDrawerLayout, slideOffset);
+                }
+            });
+            animator.start();
+        } else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(value);
+            getSupportActionBar().setDisplayShowHomeEnabled(value);
+        }
     }
+
 }

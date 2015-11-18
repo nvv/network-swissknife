@@ -1,10 +1,13 @@
 package com.nsak.android.fragments;
 
 import android.animation.Animator;
+import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
+import com.nsak.android.App;
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.animation.evaluator.ViewBottomEvaluator;
@@ -132,12 +136,16 @@ public class HostDetailsFragment extends BaseFragment {
         int itemTop = getArg(ARG_SELECTED_ITEM_TOP);
         int itemBottom = getArg(ARG_SELECTED_ITEM_BOTTOM);
 
-        Animator heightAnim = ValueAnimator.ofObject(new ViewBottomEvaluator(mRootView), enter ? itemBottom: height, enter ? height : itemBottom);
+        int white = getResources().getColor(R.color.white);
+        int grey = getResources().getColor(R.color.grey);
+
+        ObjectAnimator colorAnim = ObjectAnimator.ofObject(mRootView, "backgroundColor", new ArgbEvaluator(), enter ? white : grey, enter ? grey : white);
+        Animator heightAnim = ValueAnimator.ofObject(new ViewBottomEvaluator(mRootView), enter ? itemBottom : height, enter ? height : itemBottom);
         Animator topAnim = ObjectAnimator.ofObject(mRootView, "y", new IntEvaluator(), enter ? itemTop : 0, enter ? 0 : itemTop);
 
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(heightAnim, topAnim);
-        set.setDuration(500);
+        set.playTogether(colorAnim, heightAnim, topAnim);
+        set.setDuration(750);
         set.setInterpolator(new DecelerateInterpolator());
 
         if (enter) {

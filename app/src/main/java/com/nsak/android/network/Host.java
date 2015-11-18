@@ -3,6 +3,8 @@ package com.nsak.android.network;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.nsak.android.App;
+import com.nsak.android.R;
 import com.nsak.android.network.utils.HardwareUtils;
 import com.nsak.android.utils.TextUtils;
 
@@ -36,7 +38,8 @@ public class Host implements Parcelable {
 */
 
     public String getName() {
-        return TextUtils.isNullOrEmpty(hostname) || ipAddress.equals(hostname) ? netBiosName : hostname;
+        String name = TextUtils.isNullOrEmpty(hostname) || ipAddress.equals(hostname) ? netBiosName : hostname;
+        return isCurrentDevice && TextUtils.isNullOrEmpty(name) ? App.sInstance.getString(R.string.my_device) : name;
     }
 
     public void updateState(Host host) {
@@ -45,6 +48,7 @@ public class Host implements Parcelable {
         netBiosName = host.netBiosName;
         isReachable = true;
         lastSeen = host.discoveredTime;
+        isCurrentDevice = host.isCurrentDevice;
     }
 
     @Override

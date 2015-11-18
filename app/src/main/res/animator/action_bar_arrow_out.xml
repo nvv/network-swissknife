@@ -1,0 +1,6 @@
+<animator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="350"
+    android:valueFrom="1"
+    android:valueTo="0"
+    android:interpolator="@android:anim/decelerate_interpolator"
+    android:valueType="floatType"/>
