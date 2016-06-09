@@ -2,12 +2,13 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/network_ssid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:textSize="20sp"
         android:textStyle="bold"/>
 
@@ -17,6 +18,30 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="8dp"
+        android:textSize="14sp"
+        android:layout_centerVertical="true"
         android:textStyle="bold"/>
+
+    <ImageView
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="6dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/scanned_hosts"
+        android:src="@drawable/ic_refresh_black"
+        android:tint="@color/white"
+        android:visibility="gone"/>
+
+    <!--<ImageView-->
+        <!--android:id="@+id/stop_scan"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginRight="6dp"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_toLeftOf="@+id/scanned_hosts"-->
+        <!--android:src="@android:drawable/ic_"-->
+        <!--android:tint="@color/white"-->
+        <!--android:visibility="gone"/>-->
 
 </RelativeLayout>

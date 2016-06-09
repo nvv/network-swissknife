@@ -26,6 +26,7 @@ public class ThreadPool implements Executor {
 
     private ThreadPoolExecutor mTasksPool;
     private ConcurrentMap<Integer, Runnable> mTasks = new ConcurrentHashMap<>();
+    private ConcurrentMap<Integer, Integer> mFuturesMapping = new ConcurrentHashMap<>();
 
     private ConcurrentHashMap<Integer, Future> mSubmittedTasks = new ConcurrentHashMap<>();
     private Set<Integer> mNetworkScanTasks = Collections.synchronizedSet(new HashSet<Integer>());
@@ -37,7 +38,16 @@ public class ThreadPool implements Executor {
             @Override
             protected void afterExecute(Runnable runnable, Throwable t) {
                 super.afterExecute(runnable, t);
-                Integer id = extractId(runnable);
+                Integer id = null;
+
+                if (runnable instanceof Future) {
+                    id = mFuturesMapping.get(runnable.hashCode());
+                }
+
+                if (id == null) {
+                    id = extractId(runnable);
+                }
+
                 mTasks.remove(id);
                 mNetworkScanTasks.remove(id);
                 mSubmittedTasks.remove(id);
@@ -51,7 +61,9 @@ public class ThreadPool implements Executor {
         Integer id = extractId(runnable);
         if (!mTasks.containsKey(id)) {
             mTasks.put(id, runnable);
-            mSubmittedTasks.put(id, mTasksPool.submit(runnable));
+            Future future = mTasksPool.submit(runnable);
+            mSubmittedTasks.put(id, future);
+            mFuturesMapping.put(future.hashCode(), id);
         }
     }
 

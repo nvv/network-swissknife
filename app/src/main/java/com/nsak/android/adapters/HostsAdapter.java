@@ -87,6 +87,12 @@ public class HostsAdapter extends RecyclerView.Adapter<HostsAdapter.ItemViewHold
     }
 
     public void setItems(List<Host> hosts) {
+        if (mItems.size() > 0) {
+            mItems.clear();
+            mItemsMap.clear();
+            notifyDataSetChanged();
+        }
+
         for (Host host : hosts) {
             addItem(host);
         }

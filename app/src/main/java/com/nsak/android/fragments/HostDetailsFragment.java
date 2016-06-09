@@ -1,15 +1,15 @@
 package com.nsak.android.fragments;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +17,14 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
-import com.nsak.android.App;
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.animation.evaluator.ViewBottomEvaluator;
 import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 import com.nsak.android.network.Gateway;
 import com.nsak.android.network.Host;
+import com.nsak.android.ui.widget.DividerItemDecoration;
+import com.nsak.android.ui.widget.PopupActionWindow;
 import com.nsak.android.utils.TextUtils;
 import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.Transition;
@@ -247,6 +248,29 @@ public class HostDetailsFragment extends BaseFragment {
         if (getActivity() != null) {
             View toolbar = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_titled, null);
             ((TextView) toolbar.findViewById(R.id.toolbar_title)).setText(mSelectedHost.ipAddress);
+            final View settings = toolbar.findViewById(R.id.icon_settings);
+            settings.setVisibility(View.VISIBLE);
+            settings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    View view = LayoutInflater.from(getActivity()).inflate(R.layout.host_actions, null);
+                    PopupActionWindow popupActionWindow = new PopupActionWindow(settings, view);
+                    popupActionWindow.handleActionClick(R.id.scan_ports, new Runnable() {
+                        @Override
+                        public void run() {
+                            final PortScanFragment fragment = new PortScanFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(NetworkScanActivity.ARG_SELECTED_HOST, mSelectedHost);
+                            fragment.setArguments(bundle);
+                            ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
+                        }
+                    });
+                    popupActionWindow.handleActionClick(R.id.ping_host, null);
+                    popupActionWindow.handleActionClick(R.id.traceroute, null);
+                    popupActionWindow.show();
+                }
+            });
+
             ((NetworkScanActivityInterface) getActivity()).setViewToolbar(toolbar);
         }
     }

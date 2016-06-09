@@ -1,6 +1,7 @@
 package com.nsak.android.network;
 
 import com.nsak.android.App;
+import com.nsak.android.core.ThreadPool;
 import com.nsak.android.core.ThreadPoolRunnable;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
 import com.nsak.android.fragments.NetworkScanFragment;
@@ -101,6 +102,7 @@ public class NetworkScanner {
                             }
                             if (latch.decrementAndGet() == 0) {
                                 subscriber.onCompleted();
+//                                App.sInstance.getThreadPool().stopNetworkScanTasks();
                             }
                         }
                     });

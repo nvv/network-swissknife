@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nsak.android.App;
@@ -31,6 +32,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -49,6 +51,8 @@ public class NetworkScanFragment extends BaseFragment {
     TextView mNetworkSsid;
     @InjectView(R.id.scanned_hosts)
     TextView mScannedHosts;
+    @InjectView(R.id.refresh)
+    ImageView mRefresh;
 
     private HostsAdapter mAdapter;
     private NetworkScanner mNetworkScanner;
@@ -80,13 +84,28 @@ public class NetworkScanFragment extends BaseFragment {
     private void initView() {
         ButterKnife.inject(this, getActivity().findViewById(android.R.id.content));
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new HostsAdapter(mIncomingHandler);
         mRecyclerView.setAdapter(mAdapter);
+
+        mRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRefresh.setVisibility(View.GONE);
+                scanNetwork();
+            }
+        });
+
+        scanNetwork();
+    }
+
+    private void scanNetwork() {
+
+        mTotalHostCount = 0;
+        mScannedHost = 0;
+        mReacheableHosts.clear();
 
         try {
             WifiManager manager = App.sInstance.getWifiManager();
@@ -100,7 +119,11 @@ public class NetworkScanFragment extends BaseFragment {
             mCurrentNetworkId = NetworkDbAdapter.saveNetwork(wifiInfo);
             mAdapter.setItems(HostDbAdapter.getHosts(mCurrentNetworkId, wifiInfo));
 
-            mScanNetworkSubscription.add(mNetworkScanner.scanNetwork(wifiInfo, mIncomingHandler).
+//            if (!mScanNetworkSubscription.isUnsubscribed()) {
+//                mScanNetworkSubscription.unsubscribe();
+//            }
+
+            Subscription subscription = mNetworkScanner.scanNetwork(wifiInfo, mIncomingHandler).
                     onBackpressureBuffer().
                     subscribeOn(Schedulers.computation()).
                     observeOn(AndroidSchedulers.mainThread()).
@@ -110,6 +133,7 @@ public class NetworkScanFragment extends BaseFragment {
                             HostDbAdapter.saveHosts(mCurrentNetworkId, mReacheableHosts);
                             mScanNetworkSubscription.unsubscribe();
                             mScannedHosts.setText(getString(R.string.network_scanned));
+                            mRefresh.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -132,7 +156,8 @@ public class NetworkScanFragment extends BaseFragment {
                             }
                             mScannedHosts.setText(mScannedHost + "/" + mTotalHostCount + " (" + per + "%)");
                         }
-                    }));
+                    });
+            //mScanNetworkSubscription.add(subscription);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -159,7 +184,7 @@ public class NetworkScanFragment extends BaseFragment {
                     mTotalHostCount = ((NetworkInfoDiscoveredEvent) msg.obj).hostsCount;
                     break;
                 case MSG_HOST_SELECTED:
-                    stopScan();
+//                    stopScan();
                     HostSelectedEvent event = (HostSelectedEvent) msg.obj;
                     HostDetailsFragment fragment = new HostDetailsFragment();
                     Bundle bundle = new Bundle();

@@ -1,8 +1,14 @@
 package com.nsak.android;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.PopupWindow;
+
+import com.nsak.android.ui.widget.PopupActionWindow;
 
 public class Main extends BaseDrawerActivity {
 
@@ -29,7 +35,13 @@ public class Main extends BaseDrawerActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+//            PopupActionWindow popupWindow = new PopupActionWindow(findViewById(R.id.content_view), R.layout.host_actions);
+//            popupWindow.setAnimationStyle(R.style.Animation);
+//            popupWindow.showAtLocation(findViewById(R.id.content_view), Gravity.NO_GRAVITY, 900, 100);
+//            popupWindow.showAsDropDown(findViewById(R.id.content_view));
+
+            return false;
         }
 
         return super.onOptionsItemSelected(item);

@@ -30,6 +30,7 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            card_view:cardUseCompatPadding="true"
             card_view:cardCornerRadius="6dp">
 
             <LinearLayout
@@ -119,6 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            card_view:cardUseCompatPadding="true"
             card_view:cardCornerRadius="6dp">
 
             <LinearLayout
@@ -217,6 +219,7 @@
             android:id="@+id/device_info_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            card_view:cardUseCompatPadding="true"
             card_view:cardCornerRadius="6dp">
 
             <LinearLayout
@@ -304,6 +307,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_marginBottom="6dp"
+            card_view:cardUseCompatPadding="true"
             card_view:cardCornerRadius="6dp">
 
             <LinearLayout

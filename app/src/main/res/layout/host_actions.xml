@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:drawable/dialog_holo_light_frame"
+    android:orientation="vertical"
+    android:paddingRight="25dp"
+    android:paddingLeft="25dp"
+    android:paddingTop="15dip"
+    android:paddingBottom="15dip">
+
+    <TextView
+        android:id="@+id/scan_ports"
+        style="@style/ActionListItemFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/scan_ports" />
+
+    <TextView
+        android:id="@+id/ping_host"
+        style="@style/ActionListItemFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ping_host" />
+
+    <TextView
+        android:id="@+id/traceroute"
+        style="@style/ActionListItemFont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/traceroute" />
+
+</LinearLayout>

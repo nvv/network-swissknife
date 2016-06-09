@@ -45,7 +45,7 @@ public class PortsAdapter extends RecyclerView.Adapter<PortsAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(final ItemViewHolder holder, int position) {
         final Port host = mItems.get(position);
-        holder.portNum.setText("" + host.port);
+        holder.portNum.setText(Integer.toString(host.port));
         holder.portService.setText(host.service);
     }
 

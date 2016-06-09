@@ -10,17 +10,17 @@
 
     <TextView
         android:id="@+id/port_num"
-        android:layout_weight="0.25"
-        android:textSize="14sp"
+        style="@style/ListItemFont"
         android:textStyle="bold"
+        android:layout_weight="0.75"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/port_service"
-        android:layout_weight="0.75"
-        android:textSize="14sp"
+        style="@style/ListItemFont"
         android:textStyle="bold"
+        android:layout_weight="0.25"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 

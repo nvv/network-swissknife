@@ -19,4 +19,15 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="ActionListItemFont" parent="ListItemFont">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="PopupWindowAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_out</item>
+    </style>
+
 </resources>
