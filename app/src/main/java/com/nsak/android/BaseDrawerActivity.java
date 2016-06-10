@@ -49,6 +49,8 @@ public class BaseDrawerActivity extends AppCompatActivity {
     protected ActionBarDrawerToggle mActionBarDrawerToggle;
     protected boolean mIsBackButton;
 
+    private List<Runnable> mPostUiTasks = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,13 +159,30 @@ public class BaseDrawerActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        for (Runnable runnable : mPostUiTasks) {
+            runnable.run();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         final FragmentManager manager = getFragmentManager();
         if (manager.getBackStackEntryCount() > 0) {
             mFragments.getFirst().resetViewAndPerformAction(new Runnable() {
                 @Override
                 public void run() {
-                    manager.popBackStack();
+                    try {
+                        manager.popBackStack();
+                    } catch (Exception e) {
+                        mPostUiTasks.add(new Runnable() {
+                            @Override
+                            public void run() {
+                                manager.popBackStack();
+                            }
+                        });
+                    }
                     mFragments.pop();
                     BaseFragment fragment = mFragments.getFirst();
                     updateToolbarState(fragment);

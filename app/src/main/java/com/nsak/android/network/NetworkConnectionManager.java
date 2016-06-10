@@ -45,7 +45,7 @@ public class NetworkConnectionManager {
         };
 
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        App.sInstance.registerReceiver(sSystemBroadCastReciever, filter);
+        //App.sInstance.registerReceiver(sSystemBroadCastReciever, filter);
     }
 
     public static boolean isWifiAvailable() {

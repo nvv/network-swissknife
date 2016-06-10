@@ -265,14 +265,33 @@ public class HostDetailsFragment extends BaseFragment {
                             ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
                         }
                     });
-                    popupActionWindow.handleActionClick(R.id.ping_host, null);
-                    popupActionWindow.handleActionClick(R.id.traceroute, null);
+                    popupActionWindow.handleActionClick(R.id.ping_host, new Runnable() {
+                        @Override
+                        public void run() {
+                            requestCommonResult(CommonResultsFragment.EXTRA_COMMAND_PING);
+                        }
+                    });
+                    popupActionWindow.handleActionClick(R.id.traceroute, new Runnable() {
+                        @Override
+                        public void run() {
+                            requestCommonResult(CommonResultsFragment.EXTRA_COMMAND_TRACEROUTE);
+                        }
+                    });
                     popupActionWindow.show();
                 }
             });
 
             ((NetworkScanActivityInterface) getActivity()).setViewToolbar(toolbar);
         }
+    }
+
+    private void requestCommonResult(int command) {
+        final CommonResultsFragment fragment = new CommonResultsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(NetworkScanActivity.ARG_SELECTED_HOST, mSelectedHost);
+        bundle.putInt(CommonResultsFragment.EXTRA_COMMAND, command);
+        fragment.setArguments(bundle);
+        ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
     }
 
     @Override

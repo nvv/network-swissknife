@@ -131,14 +131,14 @@ public class NetworkScanFragment extends BaseFragment {
                         @Override
                         public void onCompleted() {
                             HostDbAdapter.saveHosts(mCurrentNetworkId, mReacheableHosts);
-                            mScanNetworkSubscription.unsubscribe();
+                            //mScanNetworkSubscription.unsubscribe();
                             mScannedHosts.setText(getString(R.string.network_scanned));
                             mRefresh.setVisibility(View.VISIBLE);
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            mScanNetworkSubscription.unsubscribe();
+                            //mScanNetworkSubscription.unsubscribe();
                             e.printStackTrace();
                         }
 
@@ -157,7 +157,7 @@ public class NetworkScanFragment extends BaseFragment {
                             mScannedHosts.setText(mScannedHost + "/" + mTotalHostCount + " (" + per + "%)");
                         }
                     });
-            //mScanNetworkSubscription.add(subscription);
+            mScanNetworkSubscription.add(subscription);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -184,7 +184,7 @@ public class NetworkScanFragment extends BaseFragment {
                     mTotalHostCount = ((NetworkInfoDiscoveredEvent) msg.obj).hostsCount;
                     break;
                 case MSG_HOST_SELECTED:
-//                    stopScan();
+                    stopScan();
                     HostSelectedEvent event = (HostSelectedEvent) msg.obj;
                     HostDetailsFragment fragment = new HostDetailsFragment();
                     Bundle bundle = new Bundle();
