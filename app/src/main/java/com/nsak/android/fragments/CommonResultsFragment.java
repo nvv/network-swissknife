@@ -58,6 +58,8 @@ public class CommonResultsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mSelectedHost = getArguments().getParcelable(NetworkScanActivity.ARG_SELECTED_HOST);
         mRootView = inflater.inflate(R.layout.fragment_common_results, container, false);
+        mCommand = getArguments().getInt(EXTRA_COMMAND);
+
         updateToolbar();
         ButterKnife.inject(this, mRootView);
 
@@ -69,7 +71,6 @@ public class CommonResultsFragment extends BaseFragment {
 
         mSubscription = new CompositeSubscription();
 
-        mCommand = getArguments().getInt(EXTRA_COMMAND);
         doResult();
         return mRootView;
     }
@@ -87,9 +88,8 @@ public class CommonResultsFragment extends BaseFragment {
     private void updateToolbar() {
         if (getActivity() != null) {
             View toolbar = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_titled, null);
-            ((TextView) toolbar.findViewById(R.id.toolbar_title)).setText(mSelectedHost.ipAddress);
-            //mProgressBar = toolbar.findViewById(R.id.progress);
-            //mProgressBar.setVisibility(View.VISIBLE);
+            ((TextView) toolbar.findViewById(R.id.toolbar_title)).setText(mCommand == EXTRA_COMMAND_PING ?
+                    R.string.ping_host : R.string.traceroute);
 
             ((NetworkScanActivityInterface) getActivity()).setViewToolbar(toolbar);
         }
@@ -101,21 +101,21 @@ public class CommonResultsFragment extends BaseFragment {
         Subscription subscription = command.subscribeOn(Schedulers.computation()).
                 observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Observer<CommandLineUtils.CommandLineCommandOutput>() {
-            @Override
-            public void onCompleted() {
-                //mProgressBar.setVisibility(View.GONE);
-            }
+                    @Override
+                    public void onCompleted() {
+                        //mProgressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(CommandLineUtils.CommandLineCommandOutput output) {
-                mAdapter.addItem(output.outputLine);
-            }
-        });
+                    @Override
+                    public void onNext(CommandLineUtils.CommandLineCommandOutput output) {
+                        mAdapter.addItem(output.outputLine);
+                    }
+                });
         mSubscription.add(subscription);
     }
 

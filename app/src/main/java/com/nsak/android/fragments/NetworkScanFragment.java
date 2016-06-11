@@ -90,6 +90,11 @@ public class NetworkScanFragment extends BaseFragment {
         mAdapter = new HostsAdapter(mIncomingHandler);
         mRecyclerView.setAdapter(mAdapter);
 
+        initRefresh();
+        scanNetwork();
+    }
+
+    private void initRefresh() {
         mRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,8 +102,6 @@ public class NetworkScanFragment extends BaseFragment {
                 scanNetwork();
             }
         });
-
-        scanNetwork();
     }
 
     private void scanNetwork() {
@@ -118,10 +121,6 @@ public class NetworkScanFragment extends BaseFragment {
 
             mCurrentNetworkId = NetworkDbAdapter.saveNetwork(wifiInfo);
             mAdapter.setItems(HostDbAdapter.getHosts(mCurrentNetworkId, wifiInfo));
-
-//            if (!mScanNetworkSubscription.isUnsubscribed()) {
-//                mScanNetworkSubscription.unsubscribe();
-//            }
 
             Subscription subscription = mNetworkScanner.scanNetwork(wifiInfo, mIncomingHandler).
                     onBackpressureBuffer().
@@ -170,7 +169,6 @@ public class NetworkScanFragment extends BaseFragment {
     }
 
     private void stopScan() {
-        mScanNetworkSubscription.unsubscribe();
         if (mNetworkScanner != null) {
             mNetworkScanner.destroy();
         }
@@ -208,6 +206,9 @@ public class NetworkScanFragment extends BaseFragment {
         updateToolbar();
         ButterKnife.inject(this, getActivity().findViewById(android.R.id.content));
         mNetworkSsid.setText(mSsid);
+        mRefresh.setVisibility(View.VISIBLE);
+        mScanNetworkSubscription = new CompositeSubscription();
+        initRefresh();
     }
 
     @Override

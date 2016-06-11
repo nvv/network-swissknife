@@ -167,6 +167,10 @@ public class HostDetailsFragment extends BaseFragment {
                                     mRootView.post(new Runnable() {
                                         @Override
                                         public void run() {
+                                            if (networkInfoSectionLabels == null) {
+                                                return;
+                                            }
+
                                             networkInfoSectionLabels.setVisibility(View.VISIBLE);
                                             deviceInfoSectionLabels.setVisibility(View.VISIBLE);
 

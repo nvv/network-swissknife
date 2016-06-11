@@ -42,6 +42,6 @@
     <string name="my_device">My Device</string>
 
     <string name="scan_ports">Scan Ports</string>
-    <string name="ping_host">Ping Host</string>
+    <string name="ping_host">Ping</string>
     <string name="traceroute">Traceroute</string>
 </resources>
