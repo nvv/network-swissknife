@@ -290,10 +290,9 @@ public class HostDetailsFragment extends BaseFragment {
     }
 
     private void requestCommonResult(int command) {
-        final CommonResultsFragment fragment = new CommonResultsFragment();
+        final CommonResultsFragment fragment = CommonResultsFragment.newInstance(command);
         Bundle bundle = new Bundle();
         bundle.putParcelable(NetworkScanActivity.ARG_SELECTED_HOST, mSelectedHost);
-        bundle.putInt(CommonResultsFragment.EXTRA_COMMAND, command);
         fragment.setArguments(bundle);
         ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
     }

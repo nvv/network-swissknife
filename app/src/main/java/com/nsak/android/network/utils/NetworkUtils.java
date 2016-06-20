@@ -3,6 +3,8 @@ package com.nsak.android.network.utils;
 import android.os.AsyncTask;
 
 import com.nsak.android.App;
+import com.nsak.android.network.data.PingData;
+import com.nsak.android.network.data.TracerouteData;
 import com.nsak.android.utils.CommandLineUtils;
 
 import org.json.JSONObject;
@@ -18,12 +20,18 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import rx.Notification;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -42,11 +50,22 @@ public class NetworkUtils {
     }
 
     public static Observable<CommandLineUtils.CommandLineCommandOutput> pingCommand(String ip) {
-        return CommandLineUtils.executeCommand("ping", ip).skip(1);
+        return CommandLineUtils.executeCommand("ping", ip).
+                subscribeOn(Schedulers.computation()).
+                skip(2).
+                map(new Func1<CommandLineUtils.CommandLineCommandOutput, CommandLineUtils.CommandLineCommandOutput>() {
+                    @Override
+                    public CommandLineUtils.CommandLineCommandOutput call(CommandLineUtils.CommandLineCommandOutput output) {
+                        if (output.outputNum > 0) {
+                            output.mData = new PingData(output.outputLine);
+                        }
+                        return output;
+                    }
+                });
     }
 
-    public static Observable<CommandLineUtils.CommandLineCommandOutput> tracerouteCommand(final String host){
-        File traceroute = new File(App.sInstance.getApplicationInfo().dataDir, "traceroute");
+    public static Observable<CommandLineUtils.CommandLineCommandOutput> tracerouteCommand(final String host) {
+        final File traceroute = new File(App.sInstance.getApplicationInfo().dataDir, "traceroute");
         if (!traceroute.exists()) {
             try {
                 copyFdToFile(App.sInstance.getAssets().open("traceroute"), traceroute);
@@ -56,21 +75,57 @@ public class NetworkUtils {
             }
         }
 
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                    try {
+                        subscriber.onNext(InetAddress.getByName(host).getHostAddress());
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }
+                subscriber.onCompleted();
+            }
+
+        }).flatMap(new Func1<String, Observable<CommandLineUtils.CommandLineCommandOutput>>() {
+            @Override
+            public Observable<CommandLineUtils.CommandLineCommandOutput> call(String s) {
+                return CommandLineUtils.executeCommand(traceroute.getAbsolutePath(), s);
+            }
+        }).subscribeOn(Schedulers.computation())
+                .skip(2)
+                .map(new Func1<CommandLineUtils.CommandLineCommandOutput, CommandLineUtils.CommandLineCommandOutput>() {
+
+            @Override
+            public CommandLineUtils.CommandLineCommandOutput call(CommandLineUtils.CommandLineCommandOutput output) {
+                output.mData = new TracerouteData(output.outputLine);
+                return output;
+            }
+        });
+
+
+
+        /*
         return CommandLineUtils.executeCommand(traceroute.getAbsolutePath(), host).
-                subscribeOn(Schedulers.from(AsyncTask.THREAD_POOL_EXECUTOR)).
-                map(new Func1<CommandLineUtils.CommandLineCommandOutput, CommandLineUtils.CommandLineCommandOutput>() {
+                subscribeOn(Schedulers.computation()).map(new Func1<CommandLineUtils.CommandLineCommandOutput, CommandLineUtils.CommandLineCommandOutput>() {
                     @Override
-                    public CommandLineUtils.CommandLineCommandOutput call(CommandLineUtils.CommandLineCommandOutput commandLineCommandOutput) {
+                    public CommandLineUtils.CommandLineCommandOutput call(CommandLineUtils.CommandLineCommandOutput output) {
                         // before exec
-                        if (commandLineCommandOutput.process == null) {
+                        if (output.process == null) {
                             try {
-                                commandLineCommandOutput.args[1] = InetAddress.getByName(commandLineCommandOutput.args[1]).getHostAddress();
+                                output.args[1] = InetAddress.getByName(output.args[1]).getHostAddress();
                             } catch (Exception ignore) {}
                         }
 
-                        return commandLineCommandOutput;
+                        System.out.println("::::: >>>>>  " + output.outputLine);
+
+                        if (output.outputNum > 1) {
+                            output.mData = new TracerouteData(output.outputLine);
+                        }
+
+                        return output;
                     }
-                }).skip(1);
+                }).skip(2);
+        */
     }
 
     public static Observable<String> whoisCommand(final String host) {

@@ -1,26 +1,18 @@
 package com.nsak.android.fragments;
 
 import android.animation.Animator;
-import android.animation.IntEvaluator;
-import android.animation.ObjectAnimator;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.TextView;
 
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.adapters.CommonResultAdapter;
 import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 import com.nsak.android.network.Host;
-import com.nsak.android.network.utils.NetworkUtils;
 import com.nsak.android.ui.widget.DividerItemDecoration;
 import com.nsak.android.utils.CommandLineUtils;
 
@@ -30,14 +22,13 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author Vlad Namashko
  */
 
-public class CommonResultsFragment extends BaseFragment {
+public abstract class CommonResultsFragment extends BaseFragment {
 
     public static final String EXTRA_COMMAND = "EXTRA_COMMAND";
     public static final int EXTRA_COMMAND_PING = 0;
@@ -47,7 +38,9 @@ public class CommonResultsFragment extends BaseFragment {
     protected CommonResultAdapter mAdapter;
     protected Host mSelectedHost;
 
-    protected int mCommand;
+    //protected int mCommand;
+
+    protected View mToolbar;
 
     @InjectView(R.id.results_view)
     protected RecyclerView mRecyclerView;
@@ -58,7 +51,7 @@ public class CommonResultsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mSelectedHost = getArguments().getParcelable(NetworkScanActivity.ARG_SELECTED_HOST);
         mRootView = inflater.inflate(R.layout.fragment_common_results, container, false);
-        mCommand = getArguments().getInt(EXTRA_COMMAND);
+//        mCommand = getArguments().getInt(EXTRA_COMMAND);
 
         updateToolbar();
         ButterKnife.inject(this, mRootView);
@@ -85,25 +78,22 @@ public class CommonResultsFragment extends BaseFragment {
         return createSwipeRightAnimator(mRootView, enter);
     }
 
-    private void updateToolbar() {
+    protected void updateToolbar() {
         if (getActivity() != null) {
-            View toolbar = LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_titled, null);
-            ((TextView) toolbar.findViewById(R.id.toolbar_title)).setText(mCommand == EXTRA_COMMAND_PING ?
-                    R.string.ping_host : R.string.traceroute);
-
-            ((NetworkScanActivityInterface) getActivity()).setViewToolbar(toolbar);
+            mToolbar = LayoutInflater.from(getActivity()).inflate(R.layout.common_result_toolbar, null);
+            ((NetworkScanActivityInterface) getActivity()).setViewToolbar(mToolbar);
         }
     }
 
     private void doResult() {
-        Observable<CommandLineUtils.CommandLineCommandOutput> command = mCommand == EXTRA_COMMAND_PING ?
-                NetworkUtils.pingCommand(mSelectedHost.ipAddress) : NetworkUtils.tracerouteCommand(mSelectedHost.ipAddress);
-        Subscription subscription = command.subscribeOn(Schedulers.computation()).
-                observeOn(AndroidSchedulers.mainThread()).subscribe(
+//        Observable<CommandLineUtils.CommandLineCommandOutput> command = mCommand == EXTRA_COMMAND_PING ?
+//                NetworkUtils.pingCommand(mSelectedHost.ipAddress) : NetworkUtils.tracerouteCommand(mSelectedHost.ipAddress);
+        Subscription subscription = getCommand().observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Observer<CommandLineUtils.CommandLineCommandOutput>() {
                     @Override
                     public void onCompleted() {
-                        //mProgressBar.setVisibility(View.GONE);
+                        System.out.println(">>>>>>>>>> on completed  ");
+
                     }
 
                     @Override
@@ -113,7 +103,8 @@ public class CommonResultsFragment extends BaseFragment {
 
                     @Override
                     public void onNext(CommandLineUtils.CommandLineCommandOutput output) {
-                        mAdapter.addItem(output.outputLine);
+                        System.out.println(">>>>>  " + output.outputLine);
+                        onOutputReceived(output);
                     }
                 });
         mSubscription.add(subscription);
@@ -133,4 +124,17 @@ public class CommonResultsFragment extends BaseFragment {
     public void resetViewAndPerformAction(Runnable action) {
         action.run();
     }
+
+    public static CommonResultsFragment newInstance(int command) {
+        switch (command) {
+            case EXTRA_COMMAND_PING: default:
+                return new PingFragment();
+            case EXTRA_COMMAND_TRACEROUTE:
+                return new TracerouteFragment();
+        }
+    }
+
+    protected abstract Observable<CommandLineUtils.CommandLineCommandOutput> getCommand();
+
+    protected abstract void onOutputReceived(CommandLineUtils.CommandLineCommandOutput output);
 }

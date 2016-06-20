@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.InetAddress;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -61,10 +60,14 @@ public class CommandLineUtils {
                     commandOutput.process = process;
 
                     while ((line = reader.readLine()) != null) {
-                        commandOutput.outputLine = line;
-                        commandOutput.outputNum++;
-                        subscriber.onNext(commandOutput);
+                        CommandLineCommandOutput output = new CommandLineCommandOutput();
+                        output.args = commandOutput.args;
+                        output.outputLine = line;
+                        output.outputNum = ++commandOutput.outputNum;
+                        subscriber.onNext(output);
                     }
+
+                    subscriber.onCompleted();
                 } catch (Exception e) {
                     subscriber.onError(e);
                 }
@@ -77,6 +80,7 @@ public class CommandLineUtils {
         public String outputLine;
         public int outputNum;
         public Process process;
+        public CommandLineCommandOutputData mData;
     }
 
 }

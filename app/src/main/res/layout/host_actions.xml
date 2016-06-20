@@ -12,21 +12,21 @@
     <TextView
         android:id="@+id/scan_ports"
         style="@style/ActionListItemFont"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/scan_ports" />
 
     <TextView
         android:id="@+id/ping_host"
         style="@style/ActionListItemFont"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ping_host" />
 
     <TextView
         android:id="@+id/traceroute"
         style="@style/ActionListItemFont"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/traceroute" />
 
