@@ -60,6 +60,9 @@ public class CommandLineUtils {
                     commandOutput.process = process;
 
                     while ((line = reader.readLine()) != null) {
+                        if (subscriber.isUnsubscribed()) {
+                            break;
+                        }
                         CommandLineCommandOutput output = new CommandLineCommandOutput();
                         output.args = commandOutput.args;
                         output.outputLine = line;

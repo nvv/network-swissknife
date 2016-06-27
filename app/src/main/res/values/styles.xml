@@ -8,6 +8,10 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
 
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+
         <item name="android:textColor">@color/MainTextColor</item>
     </style>
 
@@ -32,6 +36,17 @@
 
     <style name="CommonResultFont" parent="ListItemFont">
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextLabel" parent="TextAppearance.AppCompat">
+        <item name="colorAccent">@color/MainTextColor</item>
+        <item name="colorControlNormal">@color/MainTextColor</item>
+        <item name="colorControlActivated">@color/MainTextColor</item>
+    </style>
+
+    <style name="LabeledTextEdit" parent="@android:style/Widget.EditText">
+        <item name="android:textColor">@color/MainTextColor</item>
+        <item name="android:textColorHint">@color/MainTextColor</item>
     </style>
 
 </resources>

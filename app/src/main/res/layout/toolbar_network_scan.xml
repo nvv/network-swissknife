@@ -29,8 +29,7 @@
         android:layout_marginRight="6dp"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/scanned_hosts"
-        android:src="@drawable/ic_refresh_black"
-        android:tint="@color/white"
+        android:src="@drawable/ic_refresh"
         android:visibility="gone"/>
 
     <!--<ImageView-->

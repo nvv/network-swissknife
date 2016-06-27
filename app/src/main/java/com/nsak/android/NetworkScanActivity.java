@@ -5,12 +5,12 @@ import android.view.View;
 
 import com.nsak.android.fragments.BaseFragment;
 import com.nsak.android.fragments.NetworkScanFragment;
-import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
+import com.nsak.android.fragments.intf.ActivityInterface;
 
 /**
  * @author Vlad Namashko.
  */
-public class NetworkScanActivity extends BaseDrawerActivity implements NetworkScanActivityInterface {
+public class NetworkScanActivity extends BaseDrawerActivity {
 
     public static final String ARG_SELECTED_HOST = "arg_selected_host";
     public static final String ARG_SELECTED_ITEM_TOP = "arg_selected_item_top";
@@ -22,13 +22,4 @@ public class NetworkScanActivity extends BaseDrawerActivity implements NetworkSc
         setContentView(new NetworkScanFragment());
     }
 
-    @Override
-    public void setViewToolbar(View toolbar) {
-        setToolbar(toolbar);
-    }
-
-    @Override
-    public void replaceFragment(BaseFragment fragment) {
-        setContentViewReplace(fragment);
-    }
 }

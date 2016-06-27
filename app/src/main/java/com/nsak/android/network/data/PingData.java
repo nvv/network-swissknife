@@ -13,7 +13,7 @@ public class PingData implements CommandLineCommandOutputData {
     public PingData(String outputLine) {
         String[] data = outputLine.trim().split("\\s+");
         mSize = Integer.parseInt(data[0]);
-        mTime = data[6].split("=")[1];
+        mTime = data[7].split("=")[1];
     }
 
     public int getSize() {

@@ -1,14 +1,18 @@
 package com.nsak.android.fragments;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.nsak.android.R;
-import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
 import com.nsak.android.network.data.TracerouteData;
 import com.nsak.android.network.utils.NetworkUtils;
+import com.nsak.android.ui.view.LabeledEditTextLayout;
 import com.nsak.android.utils.CommandLineUtils;
+import com.nsak.android.utils.TextUtils;
 
 import rx.Observable;
 
@@ -26,7 +30,7 @@ public class TracerouteFragment extends CommonResultsFragment {
 
     @Override
     protected Observable<CommandLineUtils.CommandLineCommandOutput> getCommand() {
-        return NetworkUtils.tracerouteCommand(mSelectedHost.ipAddress);
+        return NetworkUtils.tracerouteCommand(mAddress);
     }
 
     @Override
@@ -40,4 +44,35 @@ public class TracerouteFragment extends CommonResultsFragment {
         mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
     }
 
+    public void initEditOptions() {
+        final ViewGroup content = (ViewGroup) mToolbar.findViewById(R.id.edit_content);
+        content.setVisibility(ViewGroup.VISIBLE);
+        content.addView(LayoutInflater.from(getActivity()).inflate(R.layout.tracerout_edit_content, null));
+
+        mActionSettings.setVisibility(View.VISIBLE);
+        View doAction = mToolbar.findViewById(R.id.do_action);
+
+        final LabeledEditTextLayout text = (LabeledEditTextLayout) mToolbar.findViewById(R.id.traceroute_url);
+
+        doAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String address = text.getText();
+
+                if (TextUtils.isNullOrEmpty(address)) {
+                    text.setError(getString(R.string.error_empty_field));
+                    return;
+                }
+
+                hideKeyboard(text);
+
+                switchViewVisibility(content);
+
+                text.setError(null);
+                mAddress = address;
+                doResult();
+            }
+        });
+
+    }
 }

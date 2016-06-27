@@ -8,8 +8,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +18,9 @@ import android.widget.TextView;
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.animation.evaluator.ViewBottomEvaluator;
-import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
+import com.nsak.android.fragments.intf.ActivityInterface;
 import com.nsak.android.network.Gateway;
 import com.nsak.android.network.Host;
-import com.nsak.android.ui.widget.DividerItemDecoration;
 import com.nsak.android.ui.widget.PopupActionWindow;
 import com.nsak.android.utils.TextUtils;
 import com.transitionseverywhere.Scene;
@@ -266,7 +263,7 @@ public class HostDetailsFragment extends BaseFragment {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(NetworkScanActivity.ARG_SELECTED_HOST, mSelectedHost);
                             fragment.setArguments(bundle);
-                            ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
+                            ((ActivityInterface) getActivity()).replaceFragment(fragment);
                         }
                     });
                     popupActionWindow.handleActionClick(R.id.ping_host, new Runnable() {
@@ -285,16 +282,16 @@ public class HostDetailsFragment extends BaseFragment {
                 }
             });
 
-            ((NetworkScanActivityInterface) getActivity()).setViewToolbar(toolbar);
+            ((ActivityInterface) getActivity()).setViewToolbar(toolbar);
         }
     }
 
     private void requestCommonResult(int command) {
         final CommonResultsFragment fragment = CommonResultsFragment.newInstance(command);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(NetworkScanActivity.ARG_SELECTED_HOST, mSelectedHost);
+        bundle.putString(NetworkScanActivity.ARG_SELECTED_HOST, mSelectedHost.ipAddress);
         fragment.setArguments(bundle);
-        ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
+        ((ActivityInterface) getActivity()).replaceFragment(fragment);
     }
 
     @Override

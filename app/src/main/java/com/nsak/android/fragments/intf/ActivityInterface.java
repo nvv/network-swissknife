@@ -7,7 +7,7 @@ import com.nsak.android.fragments.BaseFragment;
 /**
  * @author Vlad Namashko.
  */
-public interface NetworkScanActivityInterface {
+public interface ActivityInterface {
 
     void setViewToolbar(View toolbar);
 

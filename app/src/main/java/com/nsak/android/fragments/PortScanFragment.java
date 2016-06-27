@@ -1,19 +1,14 @@
 package com.nsak.android.fragments;
 
 import android.animation.Animator;
-import android.animation.IntEvaluator;
-import android.animation.ObjectAnimator;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,19 +16,17 @@ import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
 import com.nsak.android.adapters.PortsAdapter;
 import com.nsak.android.db.PortServiceDbAdapter;
-import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
+import com.nsak.android.fragments.intf.ActivityInterface;
 import com.nsak.android.network.Host;
 import com.nsak.android.network.Port;
 import com.nsak.android.network.utils.NetworkUtils;
 import com.nsak.android.ui.widget.DividerItemDecoration;
-import com.nsak.android.ui.widget.PopupActionWindow;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -106,7 +99,7 @@ public class PortScanFragment extends BaseFragment {
 
             mProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
 
-            ((NetworkScanActivityInterface) getActivity()).setViewToolbar(toolbar);
+            ((ActivityInterface) getActivity()).setViewToolbar(toolbar);
         }
     }
 

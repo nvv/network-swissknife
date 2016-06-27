@@ -2,11 +2,16 @@
 <resources>
     <color name="white">#ffffff</color>
     <color name="grey">#ffedecec</color>
+    <color name="grey_2">#c1c0c0</color>
 
     <color name="PrimaryColor">#2196F3</color>
     <color name="PrimaryDarkColor">#1976D2</color>
     <color name="MainTextColor">@color/white</color>
     <color name="ListItemTextColorDark">#c20e070a</color>
     <color name="ListItemDisabledTextColor">#c2a6949b</color>
+
+    <color name="red_black">#F12221</color>
+    <color name="black">#000000</color>
+    <color name="green">#669900</color>
 
 </resources>

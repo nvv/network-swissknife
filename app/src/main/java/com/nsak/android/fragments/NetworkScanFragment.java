@@ -19,7 +19,7 @@ import com.nsak.android.db.HostDbAdapter;
 import com.nsak.android.db.NetworkDbAdapter;
 import com.nsak.android.event.HostSelectedEvent;
 import com.nsak.android.event.NetworkInfoDiscoveredEvent;
-import com.nsak.android.fragments.intf.NetworkScanActivityInterface;
+import com.nsak.android.fragments.intf.ActivityInterface;
 import com.nsak.android.network.Host;
 import com.nsak.android.network.NetworkScanner;
 import com.nsak.android.network.wifi.WifiInfo;
@@ -190,7 +190,7 @@ public class NetworkScanFragment extends BaseFragment {
                     bundle.putInt(NetworkScanActivity.ARG_SELECTED_ITEM_TOP, event.sharedView.getTop());
                     bundle.putInt(NetworkScanActivity.ARG_SELECTED_ITEM_BOTTOM, event.sharedView.getHeight());
                     fragment.setArguments(bundle);
-                    ((NetworkScanActivityInterface) getActivity()).replaceFragment(fragment);
+                    ((ActivityInterface) getActivity()).replaceFragment(fragment);
                     break;
             }
         }
@@ -218,7 +218,7 @@ public class NetworkScanFragment extends BaseFragment {
 
     private void updateToolbar() {
         if (getActivity() != null) {
-            ((NetworkScanActivityInterface) getActivity()).setViewToolbar(
+            ((ActivityInterface) getActivity()).setViewToolbar(
                     LayoutInflater.from(getActivity()).inflate(R.layout.toolbar_network_scan, null));
         }
     }

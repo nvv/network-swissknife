@@ -49,8 +49,13 @@ public class NetworkUtils {
         return returnVal == 0;
     }
 
-    public static Observable<CommandLineUtils.CommandLineCommandOutput> pingCommand(String ip) {
-        return CommandLineUtils.executeCommand("ping", ip).
+    public static Observable<CommandLineUtils.CommandLineCommandOutput> pingCommand(String ip, String ... args) {
+        String[] compoundArgs = new String[2 + args.length];
+        compoundArgs[0] = "ping";
+        System.arraycopy(args, 0, compoundArgs, 1, args.length);
+        compoundArgs[compoundArgs.length - 1] = ip;
+
+        return CommandLineUtils.executeCommand(compoundArgs).
                 subscribeOn(Schedulers.computation()).
                 skip(2).
                 map(new Func1<CommandLineUtils.CommandLineCommandOutput, CommandLineUtils.CommandLineCommandOutput>() {

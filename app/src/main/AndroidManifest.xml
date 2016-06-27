@@ -30,12 +30,10 @@
 
         <activity
             android:name=".NetworkScanActivity"
-            android:label="@string/title_activity_scan_network"
-            android:configChanges="orientation|screenSize"/>
+	        android:configChanges="orientation|screenSize"/>
 
         <activity
             android:name=".CommonResultsActivity"
-            android:label="@string/title_activity_scan_network"
             android:configChanges="orientation|screenSize"/>
 
     </application>

@@ -44,6 +44,11 @@ public class CommonResultAdapter extends RecyclerView.Adapter<CommonResultAdapte
         return mItems.size();
     }
 
+    public void clearItems() {
+        mItems.clear();
+        notifyDataSetChanged();
+    }
+
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView textLine;

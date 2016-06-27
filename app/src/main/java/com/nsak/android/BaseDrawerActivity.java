@@ -24,6 +24,8 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 
 import com.nsak.android.fragments.BaseFragment;
+import com.nsak.android.fragments.CommonResultsFragment;
+import com.nsak.android.fragments.intf.ActivityInterface;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -32,10 +34,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND;
+import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_PING;
+import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_TRACEROUTE;
+
 /**
  * @author Vlad Namashko
  */
-public class BaseDrawerActivity extends AppCompatActivity {
+public class BaseDrawerActivity extends AppCompatActivity implements ActivityInterface {
 
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 128;
 
@@ -56,7 +62,7 @@ public class BaseDrawerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.main_drawer_view);
 
-        mContentView =  (ViewGroup) findViewById(R.id.content_view);
+        mContentView = (ViewGroup) findViewById(R.id.content_view);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -86,6 +92,17 @@ public class BaseDrawerActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.wifi_analyzer:
+                        //startActivity(new Intent(BaseDrawerActivity.this, WifiAnlayzerActivity.class));
+                        return true;
+
+                    case R.id.traceroute:
+                        startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_TRACEROUTE));
+                        return true;
+
+                    case R.id.ping:
+                        startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_PING));
                         return true;
 
                     default:
@@ -184,6 +201,10 @@ public class BaseDrawerActivity extends AppCompatActivity {
                         });
                     }
                     mFragments.pop();
+                    if (mFragments.size() == 0) {
+                        return;
+                    }
+
                     BaseFragment fragment = mFragments.getFirst();
                     updateToolbarState(fragment);
                     fragment.onMovedToForeground();
@@ -260,4 +281,13 @@ public class BaseDrawerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void setViewToolbar(View toolbar) {
+        setToolbar(toolbar);
+    }
+
+    @Override
+    public void replaceFragment(BaseFragment fragment) {
+        setContentViewReplace(fragment);
+    }
 }

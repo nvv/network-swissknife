@@ -8,5 +8,14 @@
         <item
             android:id="@+id/wifi_analyzer"
             android:title="@string/title_activity_wifi_anlayzer"/>
+        <item
+            android:id="@+id/ping"
+            android:title="@string/title_ping"/>
+        <item
+            android:id="@+id/traceroute"
+            android:title="@string/title_traceroute"/>
+        <item
+            android:id="@+id/ip_calculator"
+            android:title="@string/title_ip_calculator"/>
     </group>
 </menu>

@@ -13,6 +13,9 @@
     <string name="drawer_item_contact">Contact</string>
     <string name="title_activity_wifi_anlayzer">Wifi Anlayzer</string>
     <string name="title_activity_scan_network">Scan Network</string>
+    <string name="title_ping">Ping</string>
+    <string name="title_traceroute">Traceroute</string>
+    <string name="title_ip_calculator">Ip Calculator</string>
 
     <string name="closeDrawer">Navigation View</string>
     <string name="openDrawer">Navigation View Closed</string>
@@ -44,4 +47,15 @@
     <string name="scan_ports">Scan Ports</string>
     <string name="ping_host">Ping</string>
     <string name="traceroute">Traceroute</string>
+    <string name="host_or_ip">Host or IP address</string>
+    <string name="host_or_ip_hint">e.g. google.com</string>
+
+    <string name="timeout">Timeout</string>
+    <string name="count">Count</string>
+    <string name="packet_size">Packet Size</string>
+    <string name="infinite">Infinite</string>
+    <string name="number_of_bytes">Number bytes to be sent</string>
+
+    <string name="error_empty_field">Must not be empty</string>
+
 </resources>
