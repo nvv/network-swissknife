@@ -35,8 +35,10 @@ import java.util.List;
 import java.util.Map;
 
 import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND;
+import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_MY_IP_ISP;
 import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_PING;
 import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_TRACEROUTE;
+import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_WHOIS;
 
 /**
  * @author Vlad Namashko
@@ -95,6 +97,11 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
                         //startActivity(new Intent(BaseDrawerActivity.this, WifiAnlayzerActivity.class));
                         return true;
 
+                    case R.id.whois:
+                        startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_WHOIS));
+                        return true;
+
                     case R.id.traceroute:
                         startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
                                 putExtra(EXTRA_COMMAND, EXTRA_COMMAND_TRACEROUTE));
@@ -103,6 +110,11 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
                     case R.id.ping:
                         startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
                                 putExtra(EXTRA_COMMAND, EXTRA_COMMAND_PING));
+                        return true;
+
+                    case R.id.my_ip:
+                        startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_MY_IP_ISP));
                         return true;
 
                     default:

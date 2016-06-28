@@ -9,11 +9,17 @@
             android:id="@+id/wifi_analyzer"
             android:title="@string/title_activity_wifi_anlayzer"/>
         <item
+            android:id="@+id/whois"
+            android:title="@string/title_whois"/>
+        <item
             android:id="@+id/ping"
             android:title="@string/title_ping"/>
         <item
             android:id="@+id/traceroute"
             android:title="@string/title_traceroute"/>
+        <item
+            android:id="@+id/my_ip"
+            android:title="@string/title_my_im_isp"/>
         <item
             android:id="@+id/ip_calculator"
             android:title="@string/title_ip_calculator"/>

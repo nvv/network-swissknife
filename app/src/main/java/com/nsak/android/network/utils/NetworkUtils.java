@@ -12,14 +12,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -106,35 +110,20 @@ public class NetworkUtils {
                 return output;
             }
         });
-
-
-
-        /*
-        return CommandLineUtils.executeCommand(traceroute.getAbsolutePath(), host).
-                subscribeOn(Schedulers.computation()).map(new Func1<CommandLineUtils.CommandLineCommandOutput, CommandLineUtils.CommandLineCommandOutput>() {
-                    @Override
-                    public CommandLineUtils.CommandLineCommandOutput call(CommandLineUtils.CommandLineCommandOutput output) {
-                        // before exec
-                        if (output.process == null) {
-                            try {
-                                output.args[1] = InetAddress.getByName(output.args[1]).getHostAddress();
-                            } catch (Exception ignore) {}
-                        }
-
-                        System.out.println("::::: >>>>>  " + output.outputLine);
-
-                        if (output.outputNum > 1) {
-                            output.mData = new TracerouteData(output.outputLine);
-                        }
-
-                        return output;
-                    }
-                }).skip(2);
-        */
     }
 
-    public static Observable<String> whoisCommand(final String host) {
-        return webExctractCommand("https://www.markmonitor.com/cgi-bin/affsearch.cgi?dn=" + host, "PRE");
+    public static Observable<CommandLineUtils.CommandLineCommandOutput> whoisCommand(final String host) {
+        return webExctractCommand("https://www.markmonitor.com/cgi-bin/affsearch.cgi?dn=" + host, "PRE").
+                map(new Func1<String, CommandLineUtils.CommandLineCommandOutput>() {
+                    @Override
+                    public CommandLineUtils.CommandLineCommandOutput call(String s) {
+                        CommandLineUtils.CommandLineCommandOutput output = new CommandLineUtils.CommandLineCommandOutput();
+                        output.args = new String[] { host };
+                        output.outputLine = s;
+                        output.outputNum = 0;
+                        return output;
+                    }
+                });
     }
 
     public static Observable<String> whatIsMyIpCommand() {
@@ -146,39 +135,41 @@ public class NetworkUtils {
         });
     }
 
-    public static Observable<Map<String, String>> getIspCommand() {
-        return whatIsMyIpCommand().map(new Func1<String, Map<String, String>>() {
+    public static Observable<CommandLineUtils.CommandLineCommandOutput> getIspCommand() {
+        return whatIsMyIpCommand().flatMap(new Func1<String, Observable<CommandLineUtils.CommandLineCommandOutput>>() {
             @Override
-            public Map<String, String> call(String ip) {
-                Map<String, String> ispInfo = new HashMap<>();
+            public Observable<CommandLineUtils.CommandLineCommandOutput> call(final String ip) {
+                return Observable.create(new Observable.OnSubscribe<CommandLineUtils.CommandLineCommandOutput>() {
+                    @Override
+                    public void call(Subscriber<? super CommandLineUtils.CommandLineCommandOutput> subscriber) {
+                        HttpURLConnection urlConnection = null;
+                        try {
+                            URL url = new URL(String.format("http://ipinfo.io/%s/json", ip.trim()));
+                            urlConnection = (HttpURLConnection) url.openConnection();
+                            InputStream in = urlConnection.getInputStream();
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                            String line;
 
-                try {
-                    /*
-                    HttpClient client = new DefaultHttpClient();
-                    HttpResponse response = client.execute(new HttpGet(String.format("http://ipinfo.io/%s/json", ip.trim())));
-                    StatusLine statusLine = response.getStatusLine();
-                    if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-                        response.getEntity().writeTo(out);
-                        JSONObject object = new JSONObject(out.toString());
+                            while ((line = reader.readLine()) != null) {
+                                CommandLineUtils.CommandLineCommandOutput output = new CommandLineUtils.CommandLineCommandOutput();
+                                output.outputLine = line;
+                                output.outputNum = 0;
+                                subscriber.onNext(output);
+                            }
 
-                        Iterator<String> keys = object.keys();
-                        while (keys.hasNext()) {
-                            String key = keys.next();
-                            ispInfo.put(key, object.getString(key));
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                            e.printStackTrace();
+                        } finally {
+                            if (urlConnection != null) {
+                                urlConnection.disconnect();
+                            }
                         }
-
-                        out.close();
-
                     }
-                    */
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return ispInfo;
-                }
-                return ispInfo;
+                });
             }
-        }).subscribeOn(Schedulers.from(AsyncTask.THREAD_POOL_EXECUTOR));
+        }).subscribeOn(Schedulers.io());
     }
 
     private static Observable<String> webExctractCommand(final String webResource, final String tagToExtract) {

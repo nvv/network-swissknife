@@ -29,6 +29,7 @@ public class CommonResultAdapter extends RecyclerView.Adapter<CommonResultAdapte
     public CommonResultAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         TextView view = new TextView(parent.getContext());
         view.setTextAppearance(parent.getContext(), R.style.CommonResultFont);
+        view.setTextIsSelectable(true);
         view.setPadding((int) (12 * GlobalConfiguration.DPI), (int) (4 * GlobalConfiguration.DPI),
                 (int) (12 * GlobalConfiguration.DPI), (int) (4 * GlobalConfiguration.DPI));
         return new CommonResultAdapter.ItemViewHolder(view);

@@ -36,6 +36,8 @@ public abstract class CommonResultsFragment extends BaseFragment {
     public static final String EXTRA_COMMAND = "EXTRA_COMMAND";
     public static final int EXTRA_COMMAND_PING = 0;
     public static final int EXTRA_COMMAND_TRACEROUTE = 1;
+    public static final int EXTRA_COMMAND_WHOIS = 2;
+    public static final int EXTRA_COMMAND_MY_IP_ISP = 3;
 
     protected View mRootView;
     protected CommonResultAdapter mAdapter;
@@ -203,6 +205,10 @@ public abstract class CommonResultsFragment extends BaseFragment {
                 return new PingFragment();
             case EXTRA_COMMAND_TRACEROUTE:
                 return new TracerouteFragment();
+            case EXTRA_COMMAND_WHOIS:
+                return new WhoisFragment();
+            case EXTRA_COMMAND_MY_IP_ISP:
+                return new IspFragment();
         }
     }
 

@@ -25,7 +25,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        NetworkConnectionManager.init();
+        //NetworkConnectionManager.init();
         registerActivityLifecycleCallbacks(new AppLifecycleHandler());
 
         mDatabaseHelper = new DatabaseHelper(this);
