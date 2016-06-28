@@ -51,11 +51,15 @@ public abstract class CommonResultsFragment extends BaseFragment {
 
     private CompositeSubscription mSubscription;
 
+    protected Handler mHandler;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (getArguments() != null) {
             mAddress = getArguments().getString(NetworkScanActivity.ARG_SELECTED_HOST);
         }
+        mHandler = new Handler();
+
         mRootView = inflater.inflate(R.layout.fragment_common_results, container, false);
 
         updateToolbar();
@@ -132,6 +136,15 @@ public abstract class CommonResultsFragment extends BaseFragment {
 
     protected void switchViewVisibility(ViewGroup content) {
         content.setVisibility(content.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+    }
+
+    protected void switchViewVisibilityDelayed(final ViewGroup content) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                switchViewVisibility(content);
+            }
+        }, 250);
     }
 
     protected void doResult() {

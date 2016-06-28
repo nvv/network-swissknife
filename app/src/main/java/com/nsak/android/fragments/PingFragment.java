@@ -1,5 +1,6 @@
 package com.nsak.android.fragments;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,7 +90,7 @@ public class PingFragment extends CommonResultsFragment {
 
                 hideKeyboard(text);
 
-                switchViewVisibility(content);
+                switchViewVisibilityDelayed(content);
 
                 mAddress = address;
 

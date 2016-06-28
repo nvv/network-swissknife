@@ -1,9 +1,11 @@
 package com.nsak.android.fragments;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
@@ -66,7 +68,7 @@ public class TracerouteFragment extends CommonResultsFragment {
 
                 hideKeyboard(text);
 
-                switchViewVisibility(content);
+                switchViewVisibilityDelayed(content);
 
                 text.setError(null);
                 mAddress = address;
