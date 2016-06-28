@@ -23,7 +23,7 @@ import rx.Observable;
 
 public class PingFragment extends CommonResultsFragment {
 
-    private List<String> mCommandArgs;
+    private List<String> mCommandArgs = new LinkedList<>();
 
     @Override
     protected void updateToolbar() {
@@ -61,7 +61,6 @@ public class PingFragment extends CommonResultsFragment {
         final LabeledEditTextLayout count = (LabeledEditTextLayout) mToolbar.findViewById(R.id.ping_count);
         final LabeledEditTextLayout timeout = (LabeledEditTextLayout) mToolbar.findViewById(R.id.ping_timeout);
 
-        mCommandArgs = new LinkedList<>();
         doAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -125,7 +125,7 @@ public abstract class CommonResultsFragment extends BaseFragment {
             });
 
             if (mAddress != null) {
-                mActionSettings.setVisibility(View.GONE);
+                mActionSettings.setVisibility(View.INVISIBLE);
             }
         }
     }
