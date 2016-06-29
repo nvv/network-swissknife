@@ -63,6 +63,8 @@ public class CommandLineUtils {
                         if (subscriber.isUnsubscribed()) {
                             break;
                         }
+
+                        System.out.println(":::::   " + line);
                         CommandLineCommandOutput output = new CommandLineCommandOutput();
                         output.args = commandOutput.args;
                         output.outputLine = line;
@@ -84,6 +86,17 @@ public class CommandLineUtils {
         public int outputNum;
         public Process process;
         public CommandLineCommandOutputData mData;
+
+        public CommandLineCommandOutput() {
+        }
+
+        public CommandLineCommandOutput(CommandLineCommandOutput output) {
+            this.args = output.args;
+            this.outputLine = output.outputLine;
+            this.outputNum = output.outputNum;
+            this.process = output.process;
+            this.mData = output.mData;
+        }
     }
 
 }

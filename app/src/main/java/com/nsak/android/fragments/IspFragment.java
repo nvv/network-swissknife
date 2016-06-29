@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nsak.android.R;
+import com.nsak.android.network.data.IspData;
 import com.nsak.android.network.utils.NetworkUtils;
 import com.nsak.android.ui.view.LabeledEditTextLayout;
 import com.nsak.android.utils.CommandLineUtils;
@@ -38,7 +39,8 @@ public class IspFragment extends CommonResultsFragment {
             mAdapter.addItem(item);
         }
         */
-        mAdapter.addItem(output.outputLine);
+        IspData ispData = (IspData) output.mData;
+        mAdapter.addItem(ispData.getKey() + " : " + ispData.getValue());
     }
 
     @Override
@@ -46,33 +48,5 @@ public class IspFragment extends CommonResultsFragment {
         mActionSettings.setVisibility(View.INVISIBLE);
         mAddress = " ";
         doResult();
-//        final ViewGroup content = (ViewGroup) mToolbar.findViewById(R.id.edit_content);
-//        content.setVisibility(ViewGroup.VISIBLE);
-//        content.addView(LayoutInflater.from(getActivity()).inflate(R.layout.tracerout_edit_content, null));
-//
-//        mActionSettings.setVisibility(View.VISIBLE);
-//        View doAction = mToolbar.findViewById(R.id.do_action);
-//
-//        final LabeledEditTextLayout text = (LabeledEditTextLayout) mToolbar.findViewById(R.id.traceroute_url);
-//
-//        doAction.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String address = text.getText();
-//
-//                if (TextUtils.isNullOrEmpty(address)) {
-//                    text.setError(getString(R.string.error_empty_field));
-//                    return;
-//                }
-//
-//                hideKeyboard(text);
-//
-//                switchViewVisibilityDelayed(content);
-//
-//                text.setError(null);
-//                mAddress = address;
-//                doResult();
-//            }
-//        });
     }
 }

@@ -59,5 +59,13 @@
     <string name="number_of_bytes">Number bytes to be sent</string>
 
     <string name="error_empty_field">Must not be empty</string>
+    <string name="hostname">Hostname</string>
+    <string name="city">City</string>
+    <string name="region">Region</string>
+    <string name="country">Country</string>
+    <string name="location">Location</string>
+    <string name="organization">Organization</string>
+    <string name="postal_code">Postal Code</string>
+    <string name="phone">Phone</string>
 
 </resources>

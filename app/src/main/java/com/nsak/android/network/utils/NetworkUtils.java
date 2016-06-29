@@ -3,6 +3,7 @@ package com.nsak.android.network.utils;
 import android.os.AsyncTask;
 
 import com.nsak.android.App;
+import com.nsak.android.network.data.IspData;
 import com.nsak.android.network.data.PingData;
 import com.nsak.android.network.data.TracerouteData;
 import com.nsak.android.utils.CommandLineUtils;
@@ -136,12 +137,12 @@ public class NetworkUtils {
     }
 
     public static Observable<CommandLineUtils.CommandLineCommandOutput> getIspCommand() {
-        return whatIsMyIpCommand().flatMap(new Func1<String, Observable<CommandLineUtils.CommandLineCommandOutput>>() {
+        return whatIsMyIpCommand().flatMap(new Func1<String, Observable<String>>() {
             @Override
-            public Observable<CommandLineUtils.CommandLineCommandOutput> call(final String ip) {
-                return Observable.create(new Observable.OnSubscribe<CommandLineUtils.CommandLineCommandOutput>() {
+            public Observable<String> call(final String ip) {
+                return Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
-                    public void call(Subscriber<? super CommandLineUtils.CommandLineCommandOutput> subscriber) {
+                    public void call(Subscriber<? super String> subscriber) {
                         HttpURLConnection urlConnection = null;
                         try {
                             URL url = new URL(String.format("http://ipinfo.io/%s/json", ip.trim()));
@@ -150,13 +151,12 @@ public class NetworkUtils {
                             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                             String line;
 
+                            StringBuilder data = new StringBuilder();
                             while ((line = reader.readLine()) != null) {
-                                CommandLineUtils.CommandLineCommandOutput output = new CommandLineUtils.CommandLineCommandOutput();
-                                output.outputLine = line;
-                                output.outputNum = 0;
-                                subscriber.onNext(output);
+                                data.append(line);
                             }
 
+                            subscriber.onNext(data.toString());
                             subscriber.onCompleted();
                         } catch (Exception e) {
                             subscriber.onError(e);
@@ -169,7 +169,33 @@ public class NetworkUtils {
                     }
                 });
             }
-        }).subscribeOn(Schedulers.io());
+        }).subscribeOn(Schedulers.io()).flatMap(new Func1<String, Observable<CommandLineUtils.CommandLineCommandOutput>>() {
+            @Override
+            public Observable<CommandLineUtils.CommandLineCommandOutput> call(final String json) {
+                return Observable.create(new Observable.OnSubscribe<CommandLineUtils.CommandLineCommandOutput>() {
+                    @Override
+                    public void call(Subscriber<? super CommandLineUtils.CommandLineCommandOutput> subscriber) {
+
+                        try {
+                            JSONObject object = new JSONObject(json);
+
+                            Iterator<String> keys = object.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                String value = (String) object.get(key);
+                                CommandLineUtils.CommandLineCommandOutput out = new CommandLineUtils.CommandLineCommandOutput();
+                                out.outputLine = key + " = " + value;
+                                out.mData = new IspData(key, value);
+                                subscriber.onNext(out);
+                            }
+                            subscriber.onCompleted();
+                        } catch (Exception e) {
+                            subscriber.onError(e);
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private static Observable<String> webExctractCommand(final String webResource, final String tagToExtract) {

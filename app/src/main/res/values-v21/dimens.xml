@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="toolbar_right_margin">2dp</dimen>
+</resources>
