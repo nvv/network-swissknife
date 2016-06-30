@@ -39,12 +39,12 @@ public class PingFragment extends CommonResultsFragment {
 
     @Override
     protected void onOutputReceived(CommandLineUtils.CommandLineCommandOutput output) {
-        PingData data = (PingData) output.mData;
-        if (data != null) {
-            mAdapter.addItem(data.getTime() + " " + data.getSize());
-        } else {
-            mAdapter.addItem(output.outputLine);
-        }
+        //PingData data = (PingData) output.mData;
+        //if (data != null) {
+        //    mAdapter.addItem(data.getTime() + " " + data.getSize());
+        //} else {
+        mAdapter.addItem(output.outputLine);
+        //}
         mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
     }
 

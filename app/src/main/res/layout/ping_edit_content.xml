@@ -11,6 +11,32 @@
         android:orientation="horizontal">
 
         <com.nsak.android.ui.view.LabeledEditTextLayout
+            android:id="@+id/ping_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            nsak:hint="@string/host_or_ip_hint"
+            nsak:inputType="textUri"
+            nsak:label="@string/host_or_ip"/>
+
+        <ImageView
+            android:id="@+id/do_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="bottom"
+            android:src="@drawable/ic_arrow_right"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.nsak.android.ui.view.LabeledEditTextLayout
             android:id="@+id/ping_timeout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -38,32 +64,6 @@
             nsak:inputType="number"
             nsak:hint="@string/number_of_bytes"
             nsak:label="@string/packet_size"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <com.nsak.android.ui.view.LabeledEditTextLayout
-            android:id="@+id/ping_url"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            nsak:hint="@string/host_or_ip_hint"
-            nsak:inputType="textUri"
-            nsak:label="@string/host_or_ip"/>
-
-        <ImageView
-            android:id="@+id/do_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="bottom"
-            android:src="@drawable/ic_arrow_right"/>
-
     </LinearLayout>
 
 </LinearLayout>
