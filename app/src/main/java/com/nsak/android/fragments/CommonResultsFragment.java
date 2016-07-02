@@ -19,6 +19,8 @@ import com.nsak.android.fragments.intf.ActivityInterface;
 import com.nsak.android.ui.widget.DividerItemDecoration;
 import com.nsak.android.utils.CommandLineUtils;
 
+import java.net.SocketTimeoutException;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
@@ -54,6 +56,8 @@ public abstract class CommonResultsFragment extends BaseFragment {
     private CompositeSubscription mSubscription;
 
     protected Handler mHandler;
+
+    protected int mAttempts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -131,9 +135,16 @@ public abstract class CommonResultsFragment extends BaseFragment {
             });
 
             if (mAddress != null) {
-                mActionSettings.setVisibility(View.INVISIBLE);
+                hideSettingsIcon();
             }
         }
+    }
+
+    protected void hideSettingsIcon() {
+        mActionSettings.setVisibility(View.INVISIBLE);
+        ViewGroup.LayoutParams params = mActionSettings.getLayoutParams();
+        params.width = 1;
+        mActionSettings.setLayoutParams(params);
     }
 
     protected void switchViewVisibility(ViewGroup content) {
@@ -167,12 +178,15 @@ public abstract class CommonResultsFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
+                        if (e instanceof SocketTimeoutException && mAttempts < 3) {
+                            mAttempts++;
+                            doResult();
+                        }
                         mProgress.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onNext(CommandLineUtils.CommandLineCommandOutput output) {
-                        System.out.println(">>>>>  " + output.outputLine);
                         onOutputReceived(output);
                     }
                 });
