@@ -453,6 +453,14 @@ public class NetworkCalculator {
         return r;
     }
 
+    public static byte[] OR(byte[] a1, byte[] a2) {
+        byte[] r = new byte[a1.length];
+        for (int i = 0; i < a1.length; i++) {
+            r[i] = new Integer(a1[i] | a2[i]).byteValue();
+        }
+        return r;
+    }
+
     public static byte[] XOR(byte[] a1, byte[] a2) {
         byte[] r = new byte[a1.length];
         for (int i = 0; i < a1.length; i++) {
@@ -467,6 +475,11 @@ public class NetworkCalculator {
             r[i] = new Integer(~a[i]).byteValue();
         }
         return r;
+    }
+
+    public static String broadcast(String ip, String mask) {
+        byte[] maskBytes = ipStringToBytes(mask);
+        return ipBytesToString(OR(AND(ipStringToBytes(ip), maskBytes), NOT(maskBytes)));
     }
 
     public static boolean isNetworkAvailable() {
