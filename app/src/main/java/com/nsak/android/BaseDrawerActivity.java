@@ -47,6 +47,8 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
 
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 128;
 
+    private final String EXTRA_SELECTED_ITEM_ID = "EXTRA_SELECTED_ITEM_ID";
+
     protected Toolbar mToolbar;
     protected DrawerLayout mDrawerLayout;
     protected NavigationView mNavigationView;
@@ -70,6 +72,7 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
         setSupportActionBar(mToolbar);
 
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setCheckedItem(getIntent().getIntExtra(EXTRA_SELECTED_ITEM_ID, R.id.wifi_analyzer));
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
             // This method will trigger on item Click of navigation menu
@@ -78,8 +81,10 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
 
 
                 //Checking if the item is in checked state or not, if not make it in checked state
-                if (menuItem.isChecked()) menuItem.setChecked(false);
-                else menuItem.setChecked(true);
+ //               if (menuItem.isChecked()) menuItem.setChecked(false);
+ //               else menuItem.setChecked(true);
+
+                menuItem.setChecked(!menuItem.isChecked());
 
                 //Closing drawer on item click
                 mDrawerLayout.closeDrawers();
@@ -90,31 +95,32 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
 
                     //Replacing the main content with ContentFragment Which is our Inbox View;
                     case R.id.network_scanner:
-                        startActivity(new Intent(BaseDrawerActivity.this, NetworkScanActivity.class));
+                        startActivity(new Intent(BaseDrawerActivity.this, NetworkScanActivity.class).
+                                putExtra(EXTRA_SELECTED_ITEM_ID, R.id.network_scanner));
                         return true;
 
                     case R.id.wifi_analyzer:
                         //startActivity(new Intent(BaseDrawerActivity.this, WifiAnlayzerActivity.class));
-                        return true;
+                        return false;
 
                     case R.id.whois:
                         startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
-                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_WHOIS));
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_WHOIS).putExtra(EXTRA_SELECTED_ITEM_ID, R.id.whois));
                         return true;
 
                     case R.id.traceroute:
                         startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
-                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_TRACEROUTE));
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_TRACEROUTE).putExtra(EXTRA_SELECTED_ITEM_ID, R.id.traceroute));
                         return true;
 
                     case R.id.ping:
                         startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
-                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_PING));
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_PING).putExtra(EXTRA_SELECTED_ITEM_ID, R.id.ping));
                         return true;
 
                     case R.id.my_ip:
                         startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
-                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_MY_IP_ISP));
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_MY_IP_ISP).putExtra(EXTRA_SELECTED_ITEM_ID, R.id.my_ip));
                         return true;
 
                     default:
