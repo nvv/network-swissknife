@@ -3,6 +3,8 @@ package com.nsak.android.network.utils;
 import android.os.AsyncTask;
 
 import com.nsak.android.App;
+import com.nsak.android.R;
+import com.nsak.android.network.data.IpInfoData;
 import com.nsak.android.network.data.IspData;
 import com.nsak.android.network.data.PingData;
 import com.nsak.android.network.data.TracerouteData;
@@ -14,7 +16,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,18 +26,10 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import rx.Notification;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -195,6 +188,61 @@ public class NetworkUtils {
                     }
                 });
             }
+        });
+    }
+
+    public static Observable<CommandLineUtils.CommandLineCommandOutput> ipCalculatorCommand(final String ip, final String mask) {
+
+        return Observable.create(new Observable.OnSubscribe<CommandLineUtils.CommandLineCommandOutput>() {
+            @Override
+            public void call(Subscriber<? super CommandLineUtils.CommandLineCommandOutput> subscriber) {
+                try {
+                    CommandLineUtils.CommandLineCommandOutput output;
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.network),
+                            NetworkCalculator.ipBytesToString(NetworkCalculator.network(ip, mask)));
+                    subscriber.onNext(output);
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.netmask), mask);
+                    subscriber.onNext(output);
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.cidr),
+                            "" + NetworkCalculator.maskToCidr(mask));
+                    subscriber.onNext(output);
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.broadcast),
+                            "" + NetworkCalculator.broadcast(ip, mask));
+                    subscriber.onNext(output);
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.wildcard_mask),
+                            NetworkCalculator.wildcard(mask));
+                    subscriber.onNext(output);
+
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.first_available_address),
+                            NetworkCalculator.ipBytesToString(NetworkCalculator.networkStartIp(ip, mask)));
+                    subscriber.onNext(output);
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.last_available_address),
+                            NetworkCalculator.ipBytesToString(NetworkCalculator.networkLastIp(ip, mask)));
+                    subscriber.onNext(output);
+
+                    output = new CommandLineUtils.CommandLineCommandOutput();
+                    output.mData = new IpInfoData(App.sInstance.getString(R.string.available_address), "" + NetworkCalculator.numberOfRealAddressesInMask(mask));
+                    subscriber.onNext(output);
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+                subscriber.onCompleted();
+            }
+
         });
     }
 

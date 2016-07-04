@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND;
+import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_IP_CALCULATOR;
 import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_MY_IP_ISP;
 import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_PING;
 import static com.nsak.android.fragments.CommonResultsFragment.EXTRA_COMMAND_TRACEROUTE;
@@ -121,6 +122,11 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
                     case R.id.my_ip:
                         startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
                                 putExtra(EXTRA_COMMAND, EXTRA_COMMAND_MY_IP_ISP).putExtra(EXTRA_SELECTED_ITEM_ID, R.id.my_ip));
+                        return true;
+
+                    case R.id.ip_calculator:
+                        startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
+                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_IP_CALCULATOR).putExtra(EXTRA_SELECTED_ITEM_ID, R.id.ip_calculator));
                         return true;
 
                     default:

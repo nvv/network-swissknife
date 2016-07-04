@@ -11,13 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
+import com.nsak.android.adapters.BaseCommonResultAdapter;
 import com.nsak.android.adapters.CommonResultAdapter;
 import com.nsak.android.fragments.intf.ActivityInterface;
 import com.nsak.android.ui.widget.DividerItemDecoration;
 import com.nsak.android.utils.CommandLineUtils;
+import com.nsak.android.utils.GlobalConfiguration;
 
 import java.net.SocketTimeoutException;
 
@@ -40,9 +43,10 @@ public abstract class CommonResultsFragment extends BaseFragment {
     public static final int EXTRA_COMMAND_TRACEROUTE = 1;
     public static final int EXTRA_COMMAND_WHOIS = 2;
     public static final int EXTRA_COMMAND_MY_IP_ISP = 3;
+    public static final int EXTRA_COMMAND_IP_CALCULATOR = 4;
 
     protected View mRootView;
-    protected CommonResultAdapter mAdapter;
+    protected BaseCommonResultAdapter mAdapter;
     protected String mAddress;
 
     protected View mToolbar;
@@ -74,7 +78,7 @@ public abstract class CommonResultsFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
-        mAdapter = new CommonResultAdapter();
+        initAdapter();
         mRecyclerView.setAdapter(mAdapter);
 
         mSubscription = new CompositeSubscription();
@@ -87,6 +91,10 @@ public abstract class CommonResultsFragment extends BaseFragment {
         super.onDestroy();
         mSubscription.clear();
         mSubscription.unsubscribe();
+    }
+
+    protected void initAdapter() {
+        mAdapter = new CommonResultAdapter();
     }
 
     @Override
@@ -122,6 +130,13 @@ public abstract class CommonResultsFragment extends BaseFragment {
     protected void updateToolbar() {
         if (getActivity() != null) {
             mToolbar = LayoutInflater.from(getActivity()).inflate(R.layout.common_result_toolbar, null);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.topMargin = GlobalConfiguration.getDimensionSize(16);
+
+            mToolbar.setLayoutParams(params);
+
             ((ActivityInterface) getActivity()).setViewToolbar(mToolbar);
             mActionSettings = mToolbar.findViewById(R.id.action_settings);
             mProgress = mToolbar.findViewById(R.id.progress);
@@ -147,7 +162,10 @@ public abstract class CommonResultsFragment extends BaseFragment {
         mActionSettings.setLayoutParams(params);
     }
 
-    protected void switchViewVisibility(ViewGroup content) {
+    protected void switchViewVisibility(final ViewGroup content) {
+//        mToolbar.setPadding(mToolbar.getPaddingLeft(), content.getVisibility() == View.VISIBLE ? 0 : GlobalConfiguration.getDimensionSize(16),
+//                mToolbar.getPaddingRight(), mToolbar.getPaddingBottom());
+
         content.setVisibility(content.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
 
@@ -223,6 +241,8 @@ public abstract class CommonResultsFragment extends BaseFragment {
                 return new WhoisFragment();
             case EXTRA_COMMAND_MY_IP_ISP:
                 return new IspFragment();
+            case EXTRA_COMMAND_IP_CALCULATOR:
+                return new IpCalculatorFragment();
         }
     }
 

@@ -22,4 +22,8 @@ public class GlobalConfiguration {
         display.getMetrics(metrics);
         DPI = metrics.density;
     }
+
+    public static int getDimensionSize(int size) {
+        return (int) (size * DPI);
+    }
 }

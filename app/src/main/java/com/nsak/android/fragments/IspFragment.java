@@ -1,16 +1,11 @@
 package com.nsak.android.fragments;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nsak.android.R;
 import com.nsak.android.network.data.IspData;
 import com.nsak.android.network.utils.NetworkUtils;
-import com.nsak.android.ui.view.LabeledEditTextLayout;
 import com.nsak.android.utils.CommandLineUtils;
-import com.nsak.android.utils.TextUtils;
 
 import rx.Observable;
 
@@ -23,7 +18,7 @@ public class IspFragment extends CommonResultsFragment {
     @Override
     protected void updateToolbar() {
         super.updateToolbar();
-        ((TextView) mToolbar.findViewById(R.id.toolbar_title)).setText(R.string.title_my_im_isp);
+        ((TextView) mToolbar.findViewById(R.id.toolbar_title)).setText(R.string.title_network_info);
     }
 
     @Override
@@ -45,8 +40,8 @@ public class IspFragment extends CommonResultsFragment {
 
     @Override
     public void initEditOptions() {
-        mActionSettings.setVisibility(View.INVISIBLE);
         mAddress = " ";
         doResult();
+        hideSettingsIcon();
     }
 }

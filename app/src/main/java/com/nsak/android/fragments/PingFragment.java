@@ -11,6 +11,7 @@ import com.nsak.android.network.data.PingData;
 import com.nsak.android.network.utils.NetworkUtils;
 import com.nsak.android.ui.view.LabeledEditTextLayout;
 import com.nsak.android.utils.CommandLineUtils;
+import com.nsak.android.utils.GlobalConfiguration;
 import com.nsak.android.utils.TextUtils;
 
 import java.util.LinkedList;
@@ -96,7 +97,7 @@ public class PingFragment extends CommonResultsFragment {
 
                 mCommandArgs.clear();
 
-                int packetSize = Integer.parseInt(packetSizeText) - 8;
+                int packetSize = Integer.parseInt(packetSizeText);
                 if (packetSize > 64) {
                     packetSize = 64;
                 }

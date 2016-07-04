@@ -15,7 +15,7 @@ import java.util.List;
  * @author Vlad Namashko
  */
 
-public class CommonResultAdapter extends RecyclerView.Adapter<CommonResultAdapter.ItemViewHolder> {
+public class CommonResultAdapter extends BaseCommonResultAdapter<CommonResultAdapter.ItemViewHolder, String> {
 
     protected final List<String> mItems = new ArrayList<>();
 
@@ -36,8 +36,8 @@ public class CommonResultAdapter extends RecyclerView.Adapter<CommonResultAdapte
     }
 
     @Override
-    public void onBindViewHolder(final CommonResultAdapter.ItemViewHolder holder, int position) {
-        holder.textLine.setText(mItems.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ((CommonResultAdapter.ItemViewHolder) holder).textLine.setText(mItems.get(position));
     }
 
     @Override

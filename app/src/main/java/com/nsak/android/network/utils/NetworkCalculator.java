@@ -20,6 +20,15 @@ public class NetworkCalculator {
     public static final String[] tunnelSubnets = {"192.168.0.0/16", "172.16.0.0/12", "10.0.0.0/8"};
     public static final String ipPattern = "(\\d{1,3}\\.){3}\\d{1,3}";
 
+    private static String[] sMasks = {"0.0.0.0", "128.0.0.0", "192.0.0.0", "224.0.0.0", "240.0.0.0", "248.0.0.0",
+            "252.0.0.0", "254.0.0.0", "255.0.0.0", "255.128.0.0", "255.192.0.0", "255.224.0.0",
+            "255.240.0.0", "255.248.0.0", "255.252.0.0", "255.254.0.0", "255.255.0.0",
+            "255.255.128.0", "255.255.192.0", "255.255.224.0", "255.255.240.0", "255.255.248.0",
+            "255.255.252.0", "255.255.254.0", "255.255.255.0", "255.255.255.128", "255.255.255.192",
+            "255.255.255.224", "255.255.255.240", "255.255.255.248", "255.255.255.252",
+            "255.255.255.254", "255.255.255.255"
+    };
+
     /**
      * Converts IP address from <code>int</code> to <code>String</code>
      * representation.
@@ -238,17 +247,8 @@ public class NetworkCalculator {
             return false;
         }
 
-        String[] masks = {"0.0.0.0", "128.0.0.0", "192.0.0.0", "224.0.0.0", "240.0.0.0", "248.0.0.0",
-                "252.0.0.0", "254.0.0.0", "255.0.0.0", "255.128.0.0", "255.192.0.0", "255.224.0.0",
-                "255.240.0.0", "255.248.0.0", "255.252.0.0", "255.254.0.0", "255.255.0.0",
-                "255.255.128.0", "255.255.192.0", "255.255.224.0", "255.255.240.0", "255.255.248.0",
-                "255.255.252.0", "255.255.254.0", "255.255.255.0", "255.255.255.128", "255.255.255.192",
-                "255.255.255.224", "255.255.255.240", "255.255.255.248", "255.255.255.252",
-                "255.255.255.254", "255.255.255.255"
-        };
-
         try {
-            for (String mask1 : masks) {
+            for (String mask1 : sMasks) {
                 if (correctIp(mask).equals(mask1)) {
                     return true;
                 }
@@ -258,6 +258,22 @@ public class NetworkCalculator {
         }
 
         return false;
+    }
+
+    public static int maskToCidr(String mask) {
+        int i = 0;
+        for (String mask1 : sMasks) {
+            if (correctIp(mask).equals(mask1)) {
+                return i;
+            }
+            i++;
+        }
+
+        return -1;
+    }
+
+    public static String cidrToMask(int cidr) {
+        return sMasks[cidr];
     }
 
     public static boolean isValidIp(String address) {
@@ -373,12 +389,29 @@ public class NetworkCalculator {
         return maskLen;
     }
 
-    public static byte[] networkStartIp(byte[] ipAddress, byte[] mask) {
+    public static byte[] network(byte[] ipAddress, byte[] mask) {
         return AND(ipAddress, mask);
+    }
+
+    public static byte[] network(String ipAddress, String mask) throws ParseException {
+        return AND(NetworkCalculator.ipStringToBytes(ipAddress), NetworkCalculator.ipStringToBytes(mask));
+    }
+
+    public static byte[] networkStartIp(byte[] ipAddress, byte[] mask) {
+        return ipIntToByteArray(ipBytesToInt(AND(ipAddress, mask)) + 1);
     }
 
     public static byte[] networkStartIp(String ipAddress, String mask) throws ParseException {
         return networkStartIp(NetworkCalculator.ipStringToBytes(ipAddress), NetworkCalculator.ipStringToBytes(mask));
+    }
+
+    public static byte[] networkLastIp(byte[] ipAddress, byte[] mask) {
+        int firstIp = ipBytesToInt(AND(ipAddress, mask)) + 1;
+        return ipIntToByteArray(firstIp + numberOfRealAddressesInMask(mask) - 1);
+    }
+
+    public static byte[] networkLastIp(String ipAddress, String mask) throws ParseException {
+        return networkLastIp(NetworkCalculator.ipStringToBytes(ipAddress), NetworkCalculator.ipStringToBytes(mask));
     }
 
     public static int numberOfAddressesInMask(String mask) throws ParseException {
@@ -389,6 +422,14 @@ public class NetworkCalculator {
     public static int numberOfAddressesInMask(byte mask[]) {
         int len = NetworkCalculator.quadToCidr(mask);
         return (int) Math.pow(2, 32 - len);
+    }
+
+    public static int numberOfRealAddressesInMask(byte mask[]) {
+        return numberOfAddressesInMask(mask) - 2;
+    }
+
+    public static int numberOfRealAddressesInMask(String mask) throws ParseException {
+        return numberOfAddressesInMask(mask) - 2;
     }
 
     public static byte[][] allAddressesInSubnet(byte[] startIp, int numberOfAddressesInMask) throws ParseException {
@@ -419,7 +460,7 @@ public class NetworkCalculator {
 
     public static byte[][] allAddressesInSubnet(String ipAddress, String mask) throws ParseException {
 
-        byte[] startIp = networkStartIp(ipAddress, mask);
+        byte[] startIp = network(ipAddress, mask);
         int numberOfAddressesInMask = numberOfAddressesInMask(mask);
 
         return allAddressesInSubnet(startIp, numberOfAddressesInMask);
@@ -431,7 +472,7 @@ public class NetworkCalculator {
 
     public static String[] allStringAddressesInSubnet(String ipAddress, String mask) throws ParseException {
 
-        byte[] startIp = networkStartIp(ipAddress, mask);
+        byte[] startIp = network(ipAddress, mask);
         int numberOfAddressesInMask = numberOfAddressesInMask(mask);
 
         return allStringAddressesInSubnet(startIp, numberOfAddressesInMask);
@@ -475,6 +516,10 @@ public class NetworkCalculator {
             r[i] = new Integer(~a[i]).byteValue();
         }
         return r;
+    }
+
+    public static String wildcard(String mask) {
+        return ipBytesToString(NOT(ipStringToBytes(mask)));
     }
 
     public static String broadcast(String ip, String mask) {

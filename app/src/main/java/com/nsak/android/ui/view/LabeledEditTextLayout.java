@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,12 @@ public class LabeledEditTextLayout extends LinearLayout {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LabeledEditTextLayout);
         mLabelView.setText(a.getString(R.styleable.LabeledEditTextLayout_label));
         mTextView.setHint(a.getString(R.styleable.LabeledEditTextLayout_hint));
-        mTextView.setInputType(a.getInteger(R.styleable.LabeledEditTextLayout_inputType, InputType.TYPE_TEXT_VARIATION_NORMAL));
+        int inputType = a.getInteger(R.styleable.LabeledEditTextLayout_inputType, InputType.TYPE_TEXT_VARIATION_NORMAL);
+        if (inputType == 0x00200001) { // ip address
+            mTextView.setKeyListener(DigitsKeyListener.getInstance("0123456789."));
+        } else {
+            mTextView.setInputType(inputType);
+        }
         String id = a.getString(R.styleable.LabeledEditTextLayout_nextFocus);
         if (id != null) {
             mNextFocusDownId = getResourceId("id", id);

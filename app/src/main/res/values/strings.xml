@@ -15,9 +15,9 @@
     <string name="title_activity_scan_network">Scan Network</string>
     <string name="title_ping">Ping</string>
     <string name="title_traceroute">Traceroute</string>
-    <string name="title_ip_calculator">Ip Calculator</string>
+    <string name="title_ip_calculator">IP Calculator</string>
     <string name="title_whois">Whois</string>
-    <string name="title_my_im_isp">My IP/ISP</string>
+    <string name="title_network_info">Network Info</string>
 
     <string name="closeDrawer">Navigation View</string>
     <string name="openDrawer">Navigation View Closed</string>
@@ -67,5 +67,19 @@
     <string name="organization">Organization</string>
     <string name="postal_code">Postal Code</string>
     <string name="phone">Phone</string>
+    <string name="ip_calculator">IP Calculator</string>
+    <string name="mask_or_cidr">Mask or CIDR</string>
+
+    <string name="network">Network</string>
+    <string name="netmask">Netmask</string>
+    <string name="wildcard_mask">Wildcard mask</string>
+    <string name="cidr">CIDR</string>
+    <string name="first_available_address">First available address</string>
+    <string name="last_available_address">Last available address</string>
+    <string name="broadcast">Broadcast</string>
+    <string name="available_address">Number of addresses in mask</string>
+
+    <string name="ip_address_wrong">Invalid IP Address</string>
+    <string name="mask_wrong">Invalid subnet mask. Must be in format *.*.*.* (one of allowed) or number from 0 to 32 (CIDR)</string>
 
 </resources>
