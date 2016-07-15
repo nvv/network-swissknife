@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.nsak.android.App;
 import com.nsak.android.R;
 import com.nsak.android.network.data.TracerouteData;
 import com.nsak.android.network.utils.NetworkUtils;
@@ -53,6 +54,8 @@ public class WhoisFragment extends CommonResultsFragment {
 
         final LabeledEditTextLayout text = (LabeledEditTextLayout) mToolbar.findViewById(R.id.traceroute_url);
 
+        text.setText(App.sInstance.getSettings().getLastSelectedHost());
+
         doAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +72,8 @@ public class WhoisFragment extends CommonResultsFragment {
 
                 text.setError(null);
                 mAddress = address;
+
+                App.sInstance.getSettings().setLastSelectedHost(mAddress);
                 doResult();
             }
         });

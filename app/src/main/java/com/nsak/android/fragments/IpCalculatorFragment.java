@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.nsak.android.App;
 import com.nsak.android.R;
 import com.nsak.android.adapters.CommonResultAdapter;
 import com.nsak.android.adapters.IpInfoResultAdapter;
@@ -27,6 +28,9 @@ public class IpCalculatorFragment extends CommonResultsFragment {
     private LabeledEditTextLayout mIpView;
     private LabeledEditTextLayout mMaskView;
 
+    private String mSelectedIp;
+    private String mSelectedMask;
+
     @Override
     protected void updateToolbar() {
         super.updateToolbar();
@@ -35,12 +39,7 @@ public class IpCalculatorFragment extends CommonResultsFragment {
 
     @Override
     protected Observable<CommandLineUtils.CommandLineCommandOutput> getCommand() {
-        String mask = mMaskView.getText();
-        if (!mask.contains(".")) {
-            mask = NetworkCalculator.cidrToMask(Extensions.tryParse(mask, 0));
-        }
-
-        return NetworkUtils.ipCalculatorCommand(mIpView.getText(), mask);
+        return NetworkUtils.ipCalculatorCommand(mSelectedIp, mSelectedMask);
     }
 
     protected void initAdapter() {
@@ -65,6 +64,9 @@ public class IpCalculatorFragment extends CommonResultsFragment {
 
         mIpView = (LabeledEditTextLayout) mToolbar.findViewById(R.id.ip_address);
         mMaskView = (LabeledEditTextLayout) mToolbar.findViewById(R.id.mask);
+
+        mIpView.setText(App.sInstance.getSettings().getIpCalculatorIp());
+        mMaskView.setText(App.sInstance.getSettings().getIpCalculatorMask());
 
         doAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +93,15 @@ public class IpCalculatorFragment extends CommonResultsFragment {
                 }
 
                 if (!hasError) {
+
+                    App.sInstance.getSettings().setIpCalculatorIp(address);
+                    App.sInstance.getSettings().setIpCalculatorMask(mask);
+
+                    mSelectedMask = mask;
+                    if (!mask.contains(".")) {
+                        mSelectedMask = NetworkCalculator.cidrToMask(Extensions.tryParse(mask, 0));
+                    }
+                    mSelectedIp = address;
                     doResult();
                 }
             }

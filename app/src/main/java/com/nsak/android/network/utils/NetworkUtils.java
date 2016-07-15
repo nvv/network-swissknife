@@ -60,7 +60,9 @@ public class NetworkUtils {
                     @Override
                     public CommandLineUtils.CommandLineCommandOutput call(CommandLineUtils.CommandLineCommandOutput output) {
                         if (output.outputNum > 0) {
-                            output.mData = new PingData(output.outputLine);
+                            try {
+                                output.mData = new PingData(output.outputLine);
+                            } catch (Exception ignore) {}
                         }
                         return output;
                     }

@@ -39,5 +39,7 @@
         </attr>
         <attr name="nextFocus" format="string" />
         <attr name="text" format="string" />
+        <attr name="activeLabelColor" format="color" />
+        <attr name="inputStyle" format="reference" />
     </declare-styleable>
 </resources>

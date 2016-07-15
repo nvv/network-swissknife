@@ -13,6 +13,7 @@ public class TracerouteData implements CommandLineCommandOutputData {
     private int mLevel;
     private String mIpAddress;
     private String mHost;
+    private String mTime;
 
     public TracerouteData(String outputLine) {
         String[] data = outputLine.trim().split("\\s+");
@@ -29,6 +30,18 @@ public class TracerouteData implements CommandLineCommandOutputData {
         } catch (Exception e) {
             mHost = mIpAddress;
         }
+
+        mTime = "";
+        try {
+            for (int i = 0; i < data.length; i++) {
+                if (data[i].equals("ms")) {
+                    mTime = data[i - 1];
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            mTime = "";
+        }
     }
 
     public int getLevel() {
@@ -41,5 +54,9 @@ public class TracerouteData implements CommandLineCommandOutputData {
 
     public String getHost() {
         return mHost;
+    }
+
+    public String getTime() {
+        return mTime;
     }
 }

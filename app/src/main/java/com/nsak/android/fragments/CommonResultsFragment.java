@@ -1,8 +1,10 @@
 package com.nsak.android.fragments;
 
 import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.nsak.android.NetworkScanActivity;
 import com.nsak.android.R;
@@ -54,12 +58,15 @@ public abstract class CommonResultsFragment extends BaseFragment {
     @InjectView(R.id.results_view)
     protected RecyclerView mRecyclerView;
 
-    protected View mActionSettings;
-    protected View mProgress;
+    protected ImageView mActionSettings;
+    protected ProgressBar mProgress;
+    protected View mStopCommand;
 
     private CompositeSubscription mSubscription;
 
     protected Handler mHandler;
+
+    protected View mAddtionalSettings;
 
     protected int mAttempts;
 
@@ -87,6 +94,7 @@ public abstract class CommonResultsFragment extends BaseFragment {
         return mRootView;
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mSubscription.clear();
@@ -131,6 +139,8 @@ public abstract class CommonResultsFragment extends BaseFragment {
         if (getActivity() != null) {
             mToolbar = LayoutInflater.from(getActivity()).inflate(R.layout.common_result_toolbar, null);
 
+            mAddtionalSettings = mToolbar.findViewById(R.id.additional_settings);
+
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             params.topMargin = GlobalConfiguration.getDimensionSize(16);
@@ -138,8 +148,9 @@ public abstract class CommonResultsFragment extends BaseFragment {
             mToolbar.setLayoutParams(params);
 
             ((ActivityInterface) getActivity()).setViewToolbar(mToolbar);
-            mActionSettings = mToolbar.findViewById(R.id.action_settings);
-            mProgress = mToolbar.findViewById(R.id.progress);
+            mActionSettings = (ImageView) mToolbar.findViewById(R.id.action_expand);
+            mProgress = (ProgressBar) mToolbar.findViewById(R.id.common_result_progress);
+            mStopCommand = mToolbar.findViewById(R.id.command_stop);
 
             final ViewGroup content = (ViewGroup) mToolbar.findViewById(R.id.edit_content);
             mActionSettings.setOnClickListener(new View.OnClickListener() {
@@ -156,17 +167,14 @@ public abstract class CommonResultsFragment extends BaseFragment {
     }
 
     protected void hideSettingsIcon() {
-        mActionSettings.setVisibility(View.INVISIBLE);
-        ViewGroup.LayoutParams params = mActionSettings.getLayoutParams();
-        params.width = 1;
-        mActionSettings.setLayoutParams(params);
+        mActionSettings.setVisibility(View.GONE);
     }
 
     protected void switchViewVisibility(final ViewGroup content) {
-//        mToolbar.setPadding(mToolbar.getPaddingLeft(), content.getVisibility() == View.VISIBLE ? 0 : GlobalConfiguration.getDimensionSize(16),
-//                mToolbar.getPaddingRight(), mToolbar.getPaddingBottom());
-
-        content.setVisibility(content.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        boolean isVisible = content.getVisibility() == View.VISIBLE;
+        ObjectAnimator.ofFloat(mActionSettings, "rotation", isVisible ? 0 : 180,
+                isVisible ? 180 : 0).setDuration(200).start();
+        content.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
 
     protected void switchViewVisibilityDelayed(final ViewGroup content) {
@@ -186,12 +194,15 @@ public abstract class CommonResultsFragment extends BaseFragment {
         mSubscription.clear();
 
         mAdapter.clearItems();
+
+        mProgress.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
         mProgress.setVisibility(View.VISIBLE);
-        Subscription subscription = getCommand().observeOn(AndroidSchedulers.mainThread()).subscribe(
+        final Subscription subscription = getCommand().observeOn(AndroidSchedulers.mainThread()).subscribe(
                 new Observer<CommandLineUtils.CommandLineCommandOutput>() {
                     @Override
                     public void onCompleted() {
                         mProgress.setVisibility(View.GONE);
+                        onCommandCompleted();
                     }
 
                     @Override
@@ -199,8 +210,10 @@ public abstract class CommonResultsFragment extends BaseFragment {
                         if (e instanceof SocketTimeoutException && mAttempts < 3) {
                             mAttempts++;
                             doResult();
+                        } else {
+                            mStopCommand.setVisibility(View.GONE);
+                            mProgress.setVisibility(View.GONE);
                         }
-                        mProgress.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -209,6 +222,15 @@ public abstract class CommonResultsFragment extends BaseFragment {
                     }
                 });
         mSubscription.add(subscription);
+
+        mStopCommand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subscription.unsubscribe();
+                mProgress.setVisibility(View.GONE);
+                onCommandCompleted();
+            }
+        });
     }
 
     protected void hideKeyboard(View view) {
@@ -224,6 +246,9 @@ public abstract class CommonResultsFragment extends BaseFragment {
     @Override
     public void onMovedToForeground() {
 
+    }
+
+    protected void onCommandCompleted() {
     }
 
     @Override

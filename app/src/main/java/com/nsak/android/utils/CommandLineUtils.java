@@ -72,7 +72,9 @@ public class CommandLineUtils {
                         subscriber.onNext(output);
                     }
 
-                    subscriber.onCompleted();
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onCompleted();
+                    }
                 } catch (Exception e) {
                     subscriber.onError(e);
                 }

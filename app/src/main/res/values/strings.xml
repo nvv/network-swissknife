@@ -57,6 +57,9 @@
     <string name="packet_size">Packet Size</string>
     <string name="infinite">Infinite</string>
     <string name="number_of_bytes">Number bytes to be sent</string>
+    <string name="time_to_live">Time To Live</string>
+    <string name="time_to_live_hint">Set the IP Time to Live</string>
+    <string name="pings_interval">Pings interval</string>
 
     <string name="error_empty_field">Must not be empty</string>
     <string name="hostname">Hostname</string>
@@ -81,5 +84,8 @@
 
     <string name="ip_address_wrong">Invalid IP Address</string>
     <string name="mask_wrong">Invalid subnet mask. Must be in format *.*.*.* (one of allowed) or number from 0 to 32 (CIDR)</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+    <string name="pings_interval_hint">Delay interval in seconds</string>
 
 </resources>

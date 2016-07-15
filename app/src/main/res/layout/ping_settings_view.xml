@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:nsak="http://schemas.android.com/apk/res-auto"
+    android:layout_width="400dp"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <com.nsak.android.ui.view.LabeledEditTextLayout
+            android:id="@+id/ping_timeout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            nsak:activeLabelColor="@color/PrimaryColor"
+            nsak:hint="@string/timeout"
+            nsak:inputStyle="@style/LabeledTextEditDark"
+            nsak:inputType="number"
+            nsak:label="@string/timeout"
+            nsak:text="2"/>
+
+        <com.nsak.android.ui.view.LabeledEditTextLayout
+            android:id="@+id/ping_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            nsak:activeLabelColor="@color/PrimaryColor"
+            nsak:hint="@string/infinite"
+            nsak:inputStyle="@style/LabeledTextEditDark"
+            nsak:inputType="number"
+            nsak:label="@string/count"/>
+
+        <com.nsak.android.ui.view.LabeledEditTextLayout
+            android:id="@+id/ping_packet_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            nsak:activeLabelColor="@color/PrimaryColor"
+            nsak:hint="@string/number_of_bytes"
+            nsak:inputStyle="@style/LabeledTextEditDark"
+            nsak:inputType="number"
+            nsak:label="@string/packet_size"
+            nsak:text="64"/>
+
+        <com.nsak.android.ui.view.LabeledEditTextLayout
+            android:id="@+id/pings_interval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            nsak:activeLabelColor="@color/PrimaryColor"
+            nsak:hint="@string/pings_interval_hint"
+            nsak:inputStyle="@style/LabeledTextEditDark"
+            nsak:inputType="number"
+            nsak:label="@string/pings_interval"
+            nsak:text="1"/>
+
+        <com.nsak.android.ui.view.LabeledEditTextLayout
+            android:id="@+id/time_to_live"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            nsak:activeLabelColor="@color/PrimaryColor"
+            nsak:hint="@string/time_to_live_hint"
+            nsak:inputStyle="@style/LabeledTextEditDark"
+            nsak:inputType="number"
+            nsak:label="@string/time_to_live"
+            nsak:text="64"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/cancel"
+                android:textColor="@color/PrimaryColor"/>
+
+            <TextView
+                android:id="@+id/apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/apply"
+                android:textColor="@color/PrimaryColor"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</ScrollView>

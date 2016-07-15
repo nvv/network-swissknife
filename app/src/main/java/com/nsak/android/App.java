@@ -3,6 +3,7 @@ package com.nsak.android;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.nsak.android.core.Settings;
 import com.nsak.android.core.ThreadPool;
 import com.nsak.android.network.NetworkConnectionManager;
 import com.nsak.android.network.wifi.WifiManager;
@@ -19,7 +20,7 @@ public class App extends Application {
 
     private WifiManager mWifiManager;
     private ThreadPool mThreadPool;
-
+    private Settings mSettings;
 
     @Override
     public void onCreate() {
@@ -30,6 +31,7 @@ public class App extends Application {
 
         mDatabaseHelper = new DatabaseHelper(this);
 
+        mSettings = new Settings();
         mWifiManager = new WifiManager();
         mThreadPool = new ThreadPool();
     }
@@ -58,5 +60,9 @@ public class App extends Application {
 
     public ThreadPool getThreadPool() {
         return mThreadPool;
+    }
+
+    public Settings getSettings() {
+        return mSettings;
     }
 }

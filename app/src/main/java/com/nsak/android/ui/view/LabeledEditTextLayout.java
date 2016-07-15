@@ -4,6 +4,8 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
 import android.util.AttributeSet;
@@ -50,13 +52,16 @@ public class LabeledEditTextLayout extends LinearLayout {
         if (text != null) {
             mTextView.setText(text);
         }
+
+        final int activeColor = a.getColor(R.styleable.LabeledEditTextLayout_activeLabelColor, getResources().getColor(R.color.white));
+        mTextView.setTextAppearance(getContext(), a.getResourceId(R.styleable.LabeledEditTextLayout_inputStyle, R.style.LabeledTextEdit));
+        mTextView.getBackground().setColorFilter(activeColor, PorterDuff.Mode.SRC_ATOP);
         a.recycle();
 
         mTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 int mainColor = getResources().getColor(R.color.grey_2);
-                int activeColor = getResources().getColor(R.color.white);
 
                 ValueAnimator valueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(),
                         hasFocus ? mainColor : activeColor,
@@ -77,6 +82,10 @@ public class LabeledEditTextLayout extends LinearLayout {
 
     public EditText getTextView() {
         return mTextView;
+    }
+
+    public void setText(String text) {
+        mTextView.setText(text);
     }
 
     public String getText() {
