@@ -120,8 +120,7 @@ public class BaseDrawerActivity extends AppCompatActivity implements ActivityInt
                         return true;
 
                     case R.id.my_ip:
-                        startActivity(new Intent(BaseDrawerActivity.this, CommonResultsActivity.class).
-                                putExtra(EXTRA_COMMAND, EXTRA_COMMAND_MY_IP_ISP).putExtra(EXTRA_SELECTED_ITEM_ID, R.id.my_ip));
+                        startActivity(new Intent(BaseDrawerActivity.this, NetworkInfoActivity.class));
                         return true;
 
                     case R.id.ip_calculator:
