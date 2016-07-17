@@ -7,6 +7,7 @@ import android.os.Build;
 
 import com.nsak.android.db.HistoryDbAdapter;
 import com.nsak.android.db.HostDbAdapter;
+import com.nsak.android.db.IspInfoDbAdapter;
 import com.nsak.android.db.NetworkDbAdapter;
 import com.nsak.android.db.PortServiceDbAdapter;
 import com.nsak.android.db.VendorDbAdapter;
@@ -30,6 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         NetworkDbAdapter.createTable(db);
         HostDbAdapter.createTable(db);
         HistoryDbAdapter.createTable(db);
+        IspInfoDbAdapter.createTable(db);
     }
 
     @Override

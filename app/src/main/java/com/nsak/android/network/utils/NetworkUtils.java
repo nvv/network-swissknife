@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.nsak.android.App;
 import com.nsak.android.R;
+import com.nsak.android.db.IspInfoDbAdapter;
 import com.nsak.android.network.data.IpInfoData;
 import com.nsak.android.network.data.IspData;
 import com.nsak.android.network.data.PingData;
@@ -138,6 +139,14 @@ public class NetworkUtils {
                 return Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
+
+                        IspInfoDbAdapter.IspInfo info = IspInfoDbAdapter.getValidIspInfo(ip);
+                        if (info != null) {
+                            subscriber.onNext(info.ipInfoJson);
+                            subscriber.onCompleted();
+                            return;
+                        }
+
                         HttpURLConnection urlConnection = null;
                         try {
                             URL url = new URL(String.format("http://ipinfo.io/%s/json", ip.trim()));
@@ -150,6 +159,8 @@ public class NetworkUtils {
                             while ((line = reader.readLine()) != null) {
                                 data.append(line);
                             }
+
+                            IspInfoDbAdapter.saveIspInfo(ip, data.toString());
 
                             subscriber.onNext(data.toString());
                             subscriber.onCompleted();
